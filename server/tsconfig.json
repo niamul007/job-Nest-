@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    // What version of JavaScript to compile to
+    // ES2020 is modern and fully supported by Node.js
+    "target": "ES2020",
+
+    // The module system to use
+    // CommonJS is what Node.js uses (require/module.exports under the hood)
+    "module": "commonjs",
+
+
+
+    // Where to put the compiled JavaScript files
+    "outDir": "./dist",
+
+    // Enables all strict type checking rules
+    // This is what makes TypeScript actually useful
+    "strict": true,
+
+    // Allows importing .json files directly in TypeScript
+    "resolveJsonModule": true,
+
+    // Makes sure each file can be compiled independently
+    // Required for ts-jest to work properly
+    "isolatedModules": true,
+
+    // Allows default imports from modules that don't have a default export
+    // Needed for packages like express, morgan etc.
+    "esModuleInterop": true,
+
+    // Skips type checking for files inside node_modules
+    // Speeds up compilation significantly
+    "skipLibCheck": true,
+
+    // Ensures file name casing is consistent
+    // Prevents bugs when moving between Windows and Linux
+    "forceConsistentCasingInFileNames": true
+  },
+ "include": ["src/**/*", "server.ts"]
+,  // Only compile files inside src/
+  "exclude": ["node_modules", "dist", "tests"] // Ignore these folders
+}
