@@ -1,0 +1,19 @@
+# Dependencies — anyone can recreate this with npm install
+node_modules/
+
+# Compiled output — generated from src/, not source code
+dist/
+
+# Environment variables — NEVER push these to GitHub
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jest coverage reports
+coverage/
