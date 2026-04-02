@@ -27,3 +27,4 @@ redisClient.connect().then(() => {
   console.error('❌ Failed to connect to Redis:', err.message);
   process.exit(1); // Stop the app if Redis is not available
 });
+
