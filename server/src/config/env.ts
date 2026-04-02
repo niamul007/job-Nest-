@@ -3,7 +3,7 @@
 // the app will throw an error immediately instead of
 // crashing later in a confusing way.
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 // Load the .env file into process.env
 dotenv.config();
@@ -24,35 +24,32 @@ const get = (key: string): string => {
 // The rest of the app imports from here — never from process.env directly
 export const env = {
   // Server
-  port: parseInt(get('PORT'), 10), // convert string to number
-  nodeEnv: get('NODE_ENV'),
+  port: parseInt(get("PORT"), 10), // convert string to number
+  nodeEnv: get("NODE_ENV"),
 
-  // PostgreSQL
-  db: {
-    host: get('DB_HOST'),
-    port: parseInt(get('DB_PORT'), 10),
-    name: get('DB_NAME'),
-    user: get('DB_USER'),
-    password: get('DB_PASSWORD'),
+  database: {
+    url: get("DATABASE_URL"),
   },
 
   // Redis
   redis: {
-    host: get('REDIS_HOST'),
-    port: parseInt(get('REDIS_PORT'), 10),
+    host: get("REDIS_HOST"),
+    port: parseInt(get("REDIS_PORT"), 10),
+    username: get("REDIS_USERNAME"),
+    password: get("REDIS_PASSWORD"),
   },
 
   // JWT
   jwt: {
-    secret: get('JWT_SECRET'),
-    expiresIn: get('JWT_EXPIRES_IN'),
+    secret: get("JWT_SECRET"),
+    expiresIn: get("JWT_EXPIRES_IN"),
   },
 
   // Email
   smtp: {
-    host: get('SMTP_HOST'),
-    port: parseInt(get('SMTP_PORT'), 10),
-    user: get('SMTP_USER'),
-    pass: get('SMTP_PASS'),
+    host: get("SMTP_HOST"),
+    port: parseInt(get("SMTP_PORT"), 10),
+    user: get("SMTP_USER"),
+    pass: get("SMTP_PASS"),
   },
 };

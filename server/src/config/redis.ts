@@ -9,10 +9,12 @@ import { env } from './env';
 
 // Create the Redis client
 export const redisClient = createClient({
+  username: env.redis.username,
+  password: env.redis.password,
   socket: {
     host: env.redis.host,
     port: env.redis.port,
-  },
+  }
 });
 
 // Handle connection errors
