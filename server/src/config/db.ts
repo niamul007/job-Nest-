@@ -18,12 +18,13 @@ export const pool = new Pool({
 // Test the connection when the app starts
 // This will throw an error immediately if the database
 // is not reachable instead of failing silently later
+
 pool.connect((err, client, release) => {
   if (err) {
     console.error('❌ Failed to connect to PostgreSQL:', err.message);
-    process.exit(1); // Stop the app — no point running without a database
+    process.exit(1); // stop the app
   }
-
-  console.log('✅ PostgreSQL connected successfully');
-  release(); // Release the client back to the pool
+  console.log('✅ PostgreSQL connected');
+  release(); // give connection back to pool
 });
+
