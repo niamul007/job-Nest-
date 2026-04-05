@@ -14,6 +14,7 @@ export const redisClient = createClient({
   socket: {
     host: env.redis.host,
     port: env.redis.port,
+    reconnectStrategy: (retries) => Math.min(retries * 50, 500)
   }
 });
 

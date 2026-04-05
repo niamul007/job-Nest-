@@ -9,9 +9,13 @@ import { env } from './env';
 // Create the pool using our validated env variables
 export const pool = new Pool({
   connectionString: env.database.url,
-  ssl: { rejectUnauthorized: false } // required for Neon
+  ssl: { rejectUnauthorized: false },
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
+console.log('✅ PostgreSQL pool created');
 // Test the connection when the app starts
 // This will throw an error immediately if the database
 // is not reachable instead of failing silently later
