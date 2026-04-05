@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import { findByEmail, createUser } from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
-import { User } from "../types";
 
 export async function register(
   name: string,
