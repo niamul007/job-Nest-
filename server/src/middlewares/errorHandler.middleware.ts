@@ -1,6 +1,13 @@
 import ApiResponse from "../utils/ApiResponse";
-
-export const errorHandler = (err: any, req: any, res: any) => {
+import { Request, Response, NextFunction } from "express";
+export const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   console.error(err);
-  res.status(500).json(ApiResponse.error("Internal Server Error"));
-}
+  res
+    .status(500)
+    .json(ApiResponse.error(err.message || "Internal Server Error"));
+};
