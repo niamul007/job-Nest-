@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { env } from "../config/env";
 import ApiResponse from "../utils/ApiResponse";
-import { JwtPayload } from '../types';
+import { JwtPayload } from "../types";
 
 export const protect = async (
   req: Request,
@@ -20,8 +20,13 @@ export const protect = async (
 
     req.user = decoded;
     next();
-  } catch (error) {
-    console.error("JWT Verification Error:", error);
-    res.status(401).json(ApiResponse.error("JWT error"));
+  } catch (error: any) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json(ApiResponse.error("Token expired"));
+    }
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json(ApiResponse.error("Invalid token"));
+    }
+    res.status(401).json(ApiResponse.error("Not authorized"));
   }
 };
