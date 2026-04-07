@@ -32,9 +32,9 @@ export async function findAllCompanies(): Promise<Company[]> {
   return result.rows;
 }
 
-export async function updateCompany(id: string, data: any) {
+export async function updateCompany(id: string, data: any): Promise<Company> {
   const { name, description, website, logo_url } = data;
-  const sql = `UUPDATE companies SET 
+  const sql = `UPDATE companies SET 
   name = COALESCE($1, name),
   description = COALESCE($2, description),
   website = COALESCE($3, website),
@@ -53,7 +53,7 @@ export async function updateCompany(id: string, data: any) {
   return result.rows[0];
 }
 
-export async function deleteCompany(id: string) {
+export async function deleteCompany(id: string): Promise<void> {
   const sql = "DELETE FROM companies WHERE id = $1 ";
   await pool.query(sql, [id]);
   return;
