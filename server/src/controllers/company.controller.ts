@@ -70,7 +70,7 @@ export const remove = async (req: Request, res: Response) => {
     const userId = req?.user?.id as string;
     const deleteCompany = await companyServices.deleteCompany(id, userId);
     res.status(203).json(ApiResponse.success("company deleted", deleteCompany));
-  } catch (error) {
-    res.status(400).json(ApiResponse.error("company didn't removed"));
+  } catch (error: any) {
+    res.status(400).json(ApiResponse.error(error.message));
   }
 };
