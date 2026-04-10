@@ -1,4 +1,4 @@
-import e, { Request, Response } from "express";
+import  { Request, Response } from "express";
 import * as jobServices from "../services/job.service";
 import ApiResponse from "../utils/ApiResponse";
 
