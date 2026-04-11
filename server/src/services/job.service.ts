@@ -1,5 +1,6 @@
 import * as jobModel from "../models/job.model";
 import * as companyModel from "../models/company.model";
+import { redisClient } from '../config/redis';
 
 export async function createJob(
   company_id: string,
@@ -25,6 +26,7 @@ export async function createJob(
     salary_min,
     salary_max,
   );
+  await redisClient.del('jobs:{}');
   return newJob;
 }
 
@@ -33,7 +35,23 @@ export async function getAllJobs(filters?: {
   type?: string;
   salary_min?: number;
 }) {
-  return await jobModel.findAllJobs(filters);
+  // Create a unique cache key based on filters
+  const cacheKey = `jobs:${JSON.stringify(filters || {})}`;
+
+  // Check Redis first
+  const cached = await redisClient.get(cacheKey);
+  if (cached) {
+    console.log('✅ Returning from cache'); 
+    return JSON.parse(cached);
+  }
+
+  // Not in cache — hit database
+  const jobs = await jobModel.findAllJobs(filters);
+
+  // Store in Redis for 5 minutes (300 seconds)
+  await redisClient.setEx(cacheKey, 300, JSON.stringify(jobs));
+
+  return jobs;
 }
 
 export async function getJobById(id: string) {
@@ -73,5 +91,6 @@ export async function submitJobForReview(id: string, userId: string) {
 export async function approveJob(id: string) {
   const existing = await jobModel.findJobById(id);
   if (!existing) throw new Error("Job isn't found");
+  await redisClient.del('jobs:{}');
   return await jobModel.updateJobStatus(id, "active");
 }

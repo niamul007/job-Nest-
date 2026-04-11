@@ -9,9 +9,7 @@ export async function applyToJob(
 ) {
   const job = await jobModel.findJobById(job_id);
   if (!job) throw new Error("job isn't found");
-  const company = await companyModel.findCompanyById(job.company_id);
-  if (!company) throw new Error("Company not found");
-  if (company.owner_id !== userId) throw new Error("Not authorized");
+  if (job.status !== "active") throw new Error("Job is not active");
   const existingApplication = await applicationModel.findExistingApplication(
     job_id,
     applicant_id,
@@ -29,8 +27,10 @@ export async function applyToJob(
 export async function getApplicationByJob(job_id: string, userId: string) {
   const job = await jobModel.findJobById(job_id);
   if (!job) throw new Error("Job not found");
-  if (job_id !== userId) throw new Error("Employer doesn't own the company");
-  const application = applicationModel.findApplicationsByJob(job_id);
+  const company = await companyModel.findCompanyById(job.company_id);
+  if (!company) throw new Error("Company not found");
+  if (company.owner_id !== userId) throw new Error("Not authorized");
+  const application = await applicationModel.findApplicationsByJob(job_id);
   return application;
 }
 
@@ -52,7 +52,6 @@ export async function updateApplicationStatus(
   const company = await companyModel.findCompanyById(job.company_id);
   if (!company) throw new Error("Company not found");
   if (company.owner_id !== userId) throw new Error("Not authorized");
-  const update = await applicationModel.updateApplicationStatus(id,status);
+  const update = await applicationModel.updateApplicationStatus(id, status);
   return update;
 }
-
