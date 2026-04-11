@@ -6,11 +6,15 @@ import authRoutes from './routes/auth.routes';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import companyRoutes from './routes/company.routes';
 import jobRoutes from './routes/job.routes';
+import applicationRoutes from './routes/application.routes';
+import { rateLimiter } from './middlewares/rateLimit.middleware';
+
 
 
 
 const app = express();
-
+app.use(rateLimiter);
+  
 // Middleware
 app.use(cors());
 app.use(helmet());
@@ -19,6 +23,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/applications', applicationRoutes);
 
 
 //test
