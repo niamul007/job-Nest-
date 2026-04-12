@@ -1,6 +1,7 @@
 import * as companyModel from "../models/company.model";
 import * as applicationModel from "../models/application.model";
 import * as jobModel from "../models/job.model";
+import { notifyUser } from "../websocket/ws.server";
 
 export async function applyToJob(
   job_id: string,
@@ -53,5 +54,12 @@ export async function updateApplicationStatus(
   if (!company) throw new Error("Company not found");
   if (company.owner_id !== userId) throw new Error("Not authorized");
   const update = await applicationModel.updateApplicationStatus(id, status);
+  // Notify applicant about status change
+  notifyUser(Number(application.applicant_id), {
+    type: "application_status_update",
+    message: `Your application status has been updated to: ${status}`,
+    status,
+  });
   return update;
 }
+
