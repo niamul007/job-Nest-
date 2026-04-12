@@ -5,7 +5,8 @@ export const apply = async (req: Request, res: Response): Promise<void> => {
   try {
     const { job_id, cover_letter } = req?.body;
     const applicant_id = req?.user?.id as string;
-    const result = await applicationService.applyToJob(job_id, applicant_id, cover_letter) ;
+    const email = req?.user?.email as string;
+    const result = await applicationService.applyToJob(job_id, applicant_id, cover_letter, email);
     res.status(200).json(ApiResponse.success("Job Applied", result));
   } catch (error:any) {
     res.status(400).json(ApiResponse.error(error.message));
