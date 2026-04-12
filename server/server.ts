@@ -4,6 +4,7 @@ import { env } from './src/config/env';
 import './src/config/db';
 import './src/config/redis';
 import { initWebSocketServer } from './src/websocket/ws.server';
+import './src/queues/email.worker';
 
 const server = http.createServer(app);
 

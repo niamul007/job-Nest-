@@ -2,11 +2,13 @@ import * as companyModel from "../models/company.model";
 import * as applicationModel from "../models/application.model";
 import * as jobModel from "../models/job.model";
 import { notifyUser } from "../websocket/ws.server";
+import emailQueue from "../queues/email.queue";
 
 export async function applyToJob(
   job_id: string,
   applicant_id: string,
   cover_letter: string,
+  applicant_email: string,
 ) {
   const job = await jobModel.findJobById(job_id);
   if (!job) throw new Error("job isn't found");
@@ -22,6 +24,11 @@ export async function applyToJob(
     applicant_id,
     cover_letter,
   );
+  // Send email notification
+  emailQueue.add({
+    email: applicant_email,
+    jobTitle: job.title,
+  });
   return application;
 }
 
