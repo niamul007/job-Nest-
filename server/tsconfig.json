@@ -12,6 +12,7 @@
 
     // Where to put the compiled JavaScript files
     "outDir": "./dist",
+      "types": ["jest"], // Include Jest types for testing
 
     // Enables all strict type checking rules
     // This is what makes TypeScript actually useful
