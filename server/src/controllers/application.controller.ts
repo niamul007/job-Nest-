@@ -1,45 +1,52 @@
-const jobTitle: string = "Manager";
-const age: number = 23;
-const isSleeping: boolean = true;
-
-const jobCategories: string[] = ["doctor", "engineer", "star"];
-let applicantIds: number[] = [23, 45, 65];
-
-interface Applicant {
-  name: string;
-  email: string;
-  age?: number;
-  isAvailable: boolean;
-}
-
-const applicant: Applicant = {
-  name: "Najmul",
-  email: "niamul@gmail.com",
-  isAvailable: true,
+import * as applicationService from "../services/application.service";
+import { Request, Response } from "express";
+import ApiResponse from "../utils/ApiResponse";
+export const apply = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { job_id, cover_letter } = req?.body;
+    const applicant_id = req?.user?.id as string;
+    const email = req?.user?.email as string;
+    const result = await applicationService.applyToJob(job_id, applicant_id, cover_letter, email);
+    res.status(200).json(ApiResponse.success("Job Applied", result));
+  } catch (error:any) {
+    res.status(400).json(ApiResponse.error(error.message));
+  }
 };
 
-function getFullName(first: string, last: string): string {
-  return first + last;
-}
-getFullName("najmul", "hasan");
+export const getByJob = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const job_id = req?.params?.id as string;
+    const userId = req?.user?.id as string;
+    const result = await applicationService.getApplicationByJob(job_id, userId);
+    res.status(200).json(ApiResponse.success("Applied by job", result));
+  } catch (error:any) {
+    res.status(400).json(ApiResponse.error(error.message));
+  }
+};
 
-enum NotificationStatus {
-  Unread = "unread",
-  Read = "read",
-  Archived = "archived",
-}
+export const getByApplicant = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const applicant_id = req?.user?.id as string;
+    const result =
+      await applicationService.getApplicationsByApplicant(applicant_id);
+    res.status(200).json(ApiResponse.success("application successful", result));
+  } catch (error:any ) {
+    res.status(400).json(ApiResponse.error(error.message));
+  }
+};
 
-const status1: NotificationStatus = NotificationStatus.Archived;
-
-enum ApplicationStatus {
-  Pending = "pending",
-  Reviewed = "reviewed",
-  Accepted = "accepted",
-  Rejected = "rejected",
-}
-
-const myStatus: ApplicationStatus = ApplicationStatus.Pending;
-
-type ID = string;
-const userId: ID = "hnskdfi-2423";
-console.log(userId);
+export const updateStatus = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id = req?.params?.id as string;
+    const status = req?.body.status;
+    const userId = req?.user?.id as string;
+    const result = await applicationService.updateApplicationStatus(
+      id,
+      status,
+      userId,
+    );
+    res.status(200).json(ApiResponse.success("status changed", result));
+  } catch (error:any) {
+    res.status(400).json(ApiResponse.error(error.message));
+  }
+};
