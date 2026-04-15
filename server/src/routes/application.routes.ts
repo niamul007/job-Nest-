@@ -13,10 +13,3 @@ router.patch("/:id/status", protect, authorize("employer"), applicationControlle
 
 export default router;
 
-
-// Now write src/routes/application.routes.ts. You need:
-
-// POST / — apply to job, applicant only
-// GET /job/:id — get applications by job, employer only
-// GET /my — get my applications, applicant only
-// PATCH /:id/status — update status, employer only
