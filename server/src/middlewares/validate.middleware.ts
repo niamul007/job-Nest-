@@ -14,3 +14,5 @@ export const validate = (schema: ZodSchema) => {
     next();
   };
 };
+
+export default validate;
