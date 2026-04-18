@@ -45,10 +45,10 @@ export const env = {
   },
 
   // Email
-  smtp: {
-    host: get("SMTP_HOST"),
-    port: parseInt(get("SMTP_PORT"), 10),
-    user: get("SMTP_USER"),
-    pass: get("SMTP_PASS"),
+  nodemailer: {
+    host: get("HOST"),
+    port: parseInt(get("PORT"), 10),
+    user: get("USER"),
+    pass: get("PASS"),
   },
 };
