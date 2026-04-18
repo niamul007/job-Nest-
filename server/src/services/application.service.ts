@@ -62,7 +62,7 @@ export async function updateApplicationStatus(
   if (company.owner_id !== userId) throw new Error("Not authorized");
   const update = await applicationModel.updateApplicationStatus(id, status);
   // Notify applicant about status change
-  notifyUser(Number(application.applicant_id), {
+  notifyUser((application.applicant_id), {
     type: "application_status_update",
     message: `Your application status has been updated to: ${status}`,
     status,
