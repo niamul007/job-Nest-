@@ -1,3 +1,4 @@
+import React from 'react'
 import Navbar from '../components/Navbar'
 
 // ── Hero Section ──────────────────────────────────
@@ -165,7 +166,7 @@ const LatestJobs = () => (
       {jobs.map((job) => (
         <div key={job.title} className="bg-white border border-gray-100 rounded-xl p-5 flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 shrink-0">
               {job.company}
             </div>
             <div>
@@ -257,7 +258,6 @@ const Footer = () => (
 )
 
 // ── HomePage ──────────────────────────────────────
-import React from 'react'
 
 const HomePage = () => {
   return (
