@@ -10,6 +10,7 @@ import JobDetailPage from "./pages/JobDetailPage";
 import MyApplicationsPage from "./pages/MyApplicationsPage";
 import MyJobsPage from "./pages/MyJobsPage";
 import CreateJobPage from "./pages/CreateJobPage";
+import CreateCompanyPage from "./pages/CreateCompanyPage";
 
 function App() {
   return (
@@ -48,6 +49,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["employer"]}>
               <CreateJobPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/company/create"
+          element={
+            <ProtectedRoute allowedRoles={["employer"]}>
+              <CreateCompanyPage />
             </ProtectedRoute>
           }
         />
