@@ -6,6 +6,8 @@ import DashboardPage from './pages/DashboardPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import JobsPage from './pages/JobsPage'
+import JobDetailPage from './pages/JobDetailPage'
+
 
 
 function App() {
@@ -21,6 +23,7 @@ function App() {
             <DashboardPage />
           </ProtectedRoute>
         } />
+        <Route path="/jobs/:id" element={<JobDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
