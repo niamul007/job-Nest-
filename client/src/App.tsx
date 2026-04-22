@@ -5,6 +5,8 @@ import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import JobsPage from './pages/JobsPage'
+
 
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/jobs" element={<JobsPage />} />
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <DashboardPage />
