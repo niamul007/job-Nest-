@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import DashboardLayout from '../components/DashboardLayout'
-import { getAllJobs, deleteJob, submitJob } from '../api/jobs.api'
+import { getJobsByCompany, deleteJob, submitJob } from '../api/jobs.api'
+import { getAllCompanies } from '../api/companies.api'
 import type { Job } from '../types'
 import { useAuthStore } from '../store/authStore'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -33,13 +34,16 @@ const MyJobsPage = () => {
   const fetchJobs = async () => {
     try {
       setLoading(true)
-      const response = await getAllJobs()
+      const companyRes = await getAllCompanies()
+      if (!companyRes.success || !companyRes.data) return
+      const myCompany = companyRes.data.find((c) => c.owner_id === user?.id)
+      if (!myCompany) {
+        setJobs([])
+        return
+      }
+      const response = await getJobsByCompany(myCompany.id)
       if (response.success && response.data) {
-        // filter only employer's own jobs
-        const myJobs = response.data.filter(
-          (job) => job.company_id === user?.id
-        )
-        setJobs(myJobs)
+        setJobs(response.data)
       }
     } catch {
       setError('Failed to load jobs')
