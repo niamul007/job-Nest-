@@ -110,3 +110,10 @@ export async function updateJobStatus(id: string, status: string) {
   const result = await pool.query(sql, [status, id]);
   return result.rows[0];
 }
+
+
+export async function findJobsByCompany(company_id: string): Promise<Job[]> {
+  const sql = `SELECT * FROM jobs WHERE company_id = $1 ORDER BY created_at DESC`;
+  const result = await pool.query(sql, [company_id]);
+  return result.rows;
+}
