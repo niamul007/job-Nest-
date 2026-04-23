@@ -39,3 +39,8 @@ export const approveJob = async (id: string): Promise<ApiResponse<Job>> => {
   const response = await api.patch(`/jobs/${id}/approve`);
   return response.data;
 };
+
+export const getJobsByCompany = async (companyId: string): Promise<ApiResponse<Job[]>> => {
+  const response = await api.get(`/jobs/company/${companyId}`);
+  return response.data;
+};
