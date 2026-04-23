@@ -10,7 +10,9 @@ import JobDetailPage from "./pages/JobDetailPage";
 import MyApplicationsPage from "./pages/MyApplicationsPage";
 import MyJobsPage from "./pages/MyJobsPage";
 import CreateJobPage from "./pages/CreateJobPage";
-import CreateCompanyPage from "./pages/CreateCompanyPage";
+import CompanyPage from "./pages/CompanyPage";
+// import ApplicantsPage from "./pages/ApplicantsPage";
+// import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -20,48 +22,50 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/jobs" element={<JobsPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/applications"
-          element={
-            <ProtectedRoute>
-              <MyApplicationsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/jobs"
-          element={
-            <ProtectedRoute allowedRoles={["employer"]}>
-              <MyJobsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/jobs/create"
-          element={
-            <ProtectedRoute allowedRoles={["employer"]}>
-              <CreateJobPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/company/create"
-          element={
-            <ProtectedRoute allowedRoles={["employer"]}>
-              <CreateCompanyPage />
-            </ProtectedRoute>
-          }
-        />
-
         <Route path="/jobs/:id" element={<JobDetailPage />} />
+
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/dashboard/applications" element={
+          <ProtectedRoute>
+            <MyApplicationsPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/dashboard/jobs" element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <MyJobsPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/dashboard/jobs/create" element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <CreateJobPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/dashboard/company" element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <CompanyPage />
+          </ProtectedRoute>
+        } />
+
+        {/* <Route path="/dashboard/applicants" element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <ApplicantsPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/dashboard/profile" element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        } /> */}
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
