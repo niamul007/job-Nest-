@@ -1,6 +1,8 @@
 import  { Request, Response } from "express";
 import * as jobServices from "../services/job.service";
 import ApiResponse from "../utils/ApiResponse";
+import * as jobService from "../services/job.service";
+import { NextFunction } from "express";
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -108,3 +110,12 @@ export const approve = async (req: Request , res: Response) =>{
     }
 }
 
+export const getByCompany = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { company_id } = req.params as { company_id: string };
+    const jobs = await jobService.getJobsByCompany(company_id);
+    res.status(200).json(ApiResponse.success("Jobs fetched", jobs));
+  } catch (error) {
+    next(error);
+  }
+};
