@@ -5,6 +5,7 @@ import { createJob } from '../api/jobs.api'
 import { getAllCompanies } from '../api/companies.api'
 import type { Company } from '../types'
 import { JobType } from '../types'
+import { useAuthStore } from '../store/authStore'
 
 const CreateJobPage = () => {
   const navigate = useNavigate()
@@ -27,20 +28,27 @@ const CreateJobPage = () => {
     fetchCompanies()
   }, [])
 
-  const fetchCompanies = async () => {
-    try {
-      const response = await getAllCompanies()
-      if (response.success && response.data) {
-        setCompanies(response.data)
-        if (response.data.length > 0) {
-          setFormData(prev => ({ ...prev, company_id: response.data![0].id }))
-        }
+  
+const { user } = useAuthStore()
+const fetchCompanies = async () => {
+  try {
+    const response = await getAllCompanies()
+    if (response.success && response.data) {
+      // ✅ only show MY companies
+      const myCompanies = response.data.filter(
+        (company) => company.owner_id === user?.id
+      )
+      setCompanies(myCompanies)
+      if (myCompanies.length === 0) {
+        navigate('/dashboard/company')
+      } else {
+        setFormData(prev => ({ ...prev, company_id: myCompanies[0].id }))
       }
-    } catch {
-      setError('Failed to load companies')
     }
+  } catch {
+    setError('Failed to load companies')
   }
-
+}
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
