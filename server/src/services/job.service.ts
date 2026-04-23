@@ -133,3 +133,8 @@ export async function approveJob(id: string) {
   await clearJobCache(id); // ✅ clear cache
   return updated;
 }
+
+
+export async function getJobsByCompany(company_id: string) {
+  return await jobModel.findJobsByCompany(company_id);
+}
