@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { UserRole } from "./types";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -47,7 +48,7 @@ function App() {
         <Route
           path="/dashboard/jobs"
           element={
-            <ProtectedRoute allowedRoles={["employer"]}>
+            <ProtectedRoute allowedRoles={[UserRole.Employer]}>
               <MyJobsPage />
             </ProtectedRoute>
           }
@@ -56,7 +57,7 @@ function App() {
         <Route
           path="/dashboard/jobs/create"
           element={
-            <ProtectedRoute allowedRoles={["employer"]}>
+            <ProtectedRoute allowedRoles={[UserRole.Employer]}>
               <CreateJobPage />
             </ProtectedRoute>
           }
@@ -65,7 +66,7 @@ function App() {
         <Route
           path="/dashboard/company"
           element={
-            <ProtectedRoute allowedRoles={["employer"]}>
+            <ProtectedRoute allowedRoles={[UserRole.Employer]}>
               <CompanyPage />
             </ProtectedRoute>
           }
@@ -74,7 +75,7 @@ function App() {
         <Route
           path="/dashboard/applicants"
           element={
-            <ProtectedRoute allowedRoles={["employer"]}>
+            <ProtectedRoute allowedRoles={[UserRole.Employer]}>
               <ApplicantsPage />
             </ProtectedRoute>
           }
@@ -91,7 +92,7 @@ function App() {
         <Route
           path="/dashboard/pending"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={[UserRole.Admin]}>
               <PendingJobsPage />
             </ProtectedRoute>
           }
@@ -100,7 +101,7 @@ function App() {
         <Route
           path="/dashboard/users"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={[UserRole.Admin]}>
               <AllUsersPage />
             </ProtectedRoute>
           }
