@@ -44,3 +44,8 @@ export const getJobsByCompany = async (companyId: string): Promise<ApiResponse<J
   const response = await api.get(`/jobs/company/${companyId}`);
   return response.data;
 };
+
+export const getPendingJobs = async (): Promise<ApiResponse<Job[]>> => {
+  const response = await api.get('/jobs/pending');
+  return response.data;
+};
