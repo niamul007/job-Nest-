@@ -1,145 +1,155 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import DashboardLayout from '../components/DashboardLayout'
-import { getAllJobs, deleteJob, submitJob } from '../api/jobs.api'
-import { getAllCompanies } from '../api/companies.api'
-import { useAuthStore } from '../store/authStore'
+import Navbar from '../components/Navbar'
+import { getAllJobs } from '../api/jobs.api'
 import type { Job } from '../types'
+import { JobType } from '../types'
 import LoadingSpinner from '../components/LoadingSpinner'
-import { getJobsByCompany } from '../api/jobs.api'
 
-const Badge = ({ status }: { status: string }) => {
-  const styles: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-600',
-    pending: 'bg-amber-50 text-amber-800',
-    active: 'bg-green-50 text-green-800',
-    closed: 'bg-red-50 text-red-800',
-  }
-  return (
-    <span className={`text-xs px-3 py-1 rounded-full capitalize ${styles[status] || 'bg-gray-100 text-gray-600'}`}>
-      {status}
-    </span>
-  )
-}
+const JobCard = ({ job }: { job: Job }) => (
+  <Link
+    to={`/jobs/${job.id}`}
+    className="block bg-white border border-gray-100 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition"
+  >
+    <div className="flex items-start gap-4">
+      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 shrink-0">
+        {job.title.slice(0, 2).toUpperCase()}
+      </div>
+      <div className="flex-1 min-w-0">
+        <h3 className="text-sm font-medium text-gray-900 mb-1">{job.title}</h3>
+        <p className="text-xs text-gray-500 mb-3">{job.location}</p>
+        <div className="flex gap-2 flex-wrap">
+          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+            {job.type}
+          </span>
+          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+            {job.category}
+          </span>
+          {job.salary_min && job.salary_max && (
+            <span className="text-xs px-2.5 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700">
+              ${job.salary_min}k – ${job.salary_max}k
+            </span>
+          )}
+        </div>
+      </div>
+      <span className="text-xs text-blue-600 shrink-0 mt-1">View →</span>
+    </div>
+  </Link>
+)
 
-const MyJobsPage = () => {
-  const { user } = useAuthStore()
+const typeOptions = [
+  { label: 'All', value: 'all' },
+  { label: 'Full-time', value: JobType.FullTime },
+  { label: 'Part-time', value: JobType.PartTime },
+  { label: 'Contract', value: JobType.Contract },
+  { label: 'Freelance', value: JobType.Freelance },
+]
+
+const JobsPage = () => {
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [typeFilter, setTypeFilter] = useState('all')
 
   useEffect(() => {
     fetchJobs()
   }, [])
 
-const fetchJobs = async () => {
-  try {
-    setLoading(true)
-    const companyResponse = await getAllCompanies()
-    if (!companyResponse.success || !companyResponse.data) return
-
-    const myCompany = companyResponse.data.find(
-      (c) => c.owner_id === user?.id
-    )
-    if (!myCompany) {
-      setJobs([])
-      return
-    }
-
-    const jobsResponse = await getJobsByCompany(myCompany.id)
-    if (jobsResponse.success && jobsResponse.data) {
-      setJobs(jobsResponse.data)
-    }
-  } catch {
-    setError('Failed to load jobs')
-  } finally {
-    setLoading(false)
-  }
-}
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this job?')) return
+  const fetchJobs = async () => {
     try {
-      await deleteJob(id)
-      setJobs(jobs.filter((job) => job.id !== id))
+      setLoading(true)
+      const response = await getAllJobs()
+      if (response.success && response.data) {
+        setJobs(response.data)
+      }
     } catch {
-      setError('Failed to delete job')
+      setError('Failed to load jobs')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleSubmit = async (id: string) => {
-    try {
-      await submitJob(id)
-      fetchJobs()
-    } catch {
-      setError('Failed to submit job for review')
-    }
-  }
+  const filtered = jobs.filter((job) => {
+    const q = search.toLowerCase()
+    const matchesSearch =
+      q === '' ||
+      job.title.toLowerCase().includes(q) ||
+      job.location.toLowerCase().includes(q) ||
+      job.category.toLowerCase().includes(q)
+    const matchesType = typeFilter === 'all' || job.type === typeFilter
+    return matchesSearch && matchesType
+  })
 
   return (
-    <DashboardLayout>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-lg font-medium text-gray-900 mb-1">My Jobs</h1>
-          <p className="text-sm text-gray-500">Manage your job listings</p>
-        </div>
-        <Link
-          to="/dashboard/jobs/create"
-          className="text-sm text-white bg-blue-600 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-        >
-          + Post a job
-        </Link>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
 
-      {loading ? (
-        <LoadingSpinner />
-      ) : error ? (
-        <div className="text-center text-red-500 py-10">{error}</div>
-      ) : jobs.length === 0 ? (
-        <div className="bg-white border border-gray-100 rounded-xl p-10 text-center">
-          <p className="text-gray-400 text-sm mb-4">You haven't posted any jobs yet</p>
-          <Link
-            to="/dashboard/jobs/create"
-            className="text-sm text-white bg-blue-600 px-5 py-2.5 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-          >
-            Post your first job
-          </Link>
+      <div className="max-w-4xl mx-auto px-8 py-10">
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-medium text-gray-900 mb-1">Browse Jobs</h1>
+          <p className="text-sm text-gray-500">
+            {loading ? 'Loading...' : `${jobs.length} active listing${jobs.length !== 1 ? 's' : ''}`}
+          </p>
         </div>
-      ) : (
-        <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
-          <div className="grid grid-cols-4 px-5 py-3 bg-gray-50 text-xs text-gray-500 font-medium">
-            <span>Job title</span>
-            <span>Location</span>
-            <span>Status</span>
-            <span>Actions</span>
-          </div>
-          {jobs.map((job) => (
-            <div key={job.id} className="grid grid-cols-4 px-5 py-4 border-t border-gray-100 text-sm items-center">
-              <span className="text-gray-900 font-medium">{job.title}</span>
-              <span className="text-gray-500">{job.location}</span>
-              <Badge status={job.status} />
-              <div className="flex gap-2">
-                {job.status === 'draft' && (
-                  <button
-                    onClick={() => handleSubmit(job.id)}
-                    className="text-xs text-white bg-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-                  >
-                    Submit
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDelete(job.id)}
-                  className="text-xs text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition cursor-pointer"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <svg
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
+          >
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by title, location, or category..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 bg-white"
+          />
+        </div>
+
+        {/* Type filter pills */}
+        <div className="flex gap-2 flex-wrap mb-6">
+          {typeOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => setTypeFilter(opt.value)}
+              className={`text-xs px-4 py-2 rounded-full border transition cursor-pointer ${
+                typeFilter === opt.value
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {opt.label}
+            </button>
           ))}
         </div>
-      )}
-    </DashboardLayout>
+
+        {/* Job list */}
+        {loading ? (
+          <LoadingSpinner />
+        ) : error ? (
+          <div className="text-center text-red-500 py-10">{error}</div>
+        ) : filtered.length === 0 ? (
+          <div className="bg-white border border-gray-100 rounded-xl p-10 text-center">
+            <p className="text-gray-400 text-sm">
+              {search || typeFilter !== 'all' ? 'No jobs match your search' : 'No jobs available right now'}
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {filtered.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
-export default MyJobsPage
+export default JobsPage
