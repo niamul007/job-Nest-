@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { User } from '../types';
+import { create } from 'zustand'
+import type { User } from '../types'
 
 interface AuthState {
   user: User | null;
@@ -9,16 +9,15 @@ interface AuthState {
   logout: () => void;
 }
 
-const storedUser = localStorage.getItem('user');
-
 export const useAuthStore = create<AuthState>((set) => ({
-  user: storedUser ? (JSON.parse(storedUser) as User) : null,
+  // ✅ load user from localStorage on startup
+  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null,
   token: localStorage.getItem('token'),
   isAuthenticated: !!localStorage.getItem('token'),
 
   setAuth: (user, token) => {
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user)); // ✅ save user
     set({ user, token, isAuthenticated: true });
   },
 
