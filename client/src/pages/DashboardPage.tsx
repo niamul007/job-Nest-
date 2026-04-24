@@ -3,8 +3,9 @@ import DashboardLayout from '../components/DashboardLayout'
 import { useAuthStore } from '../store/authStore'
 import { UserRole } from '../types'
 import { getMyApplications } from '../api/applications.api'
-import { getJobsByCompany } from '../api/jobs.api'
+import { getJobsByCompany, getPendingJobs, getAllJobs } from '../api/jobs.api'
 import { getAllCompanies } from '../api/companies.api'
+import { getAllUsers } from '../api/users.api'
 import type { Application, Job } from '../types'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { Link } from 'react-router-dom'
@@ -178,17 +179,45 @@ const EmployerDashboard = () => {
 }
 
 // ── Admin Dashboard ───────────────────────────────
-const AdminDashboard = () => (
-  <div>
-    <h1 className="text-lg font-medium text-gray-900 mb-1">Admin Dashboard</h1>
-    <p className="text-sm text-gray-500 mb-6">Manage the platform</p>
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <StatCard label="Total users" value="—" sub="Coming soon" />
-      <StatCard label="Pending jobs" value="—" sub="Coming soon" />
-      <StatCard label="Total jobs" value="—" sub="Coming soon" />
+const AdminDashboard = () => {
+  const [stats, setStats] = useState({ users: 0, pending: 0, active: 0 })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    try {
+      const [usersRes, pendingRes, jobsRes] = await Promise.all([
+        getAllUsers(),
+        getPendingJobs(),
+        getAllJobs(),
+      ])
+      setStats({
+        users: usersRes.success && usersRes.data ? usersRes.data.length : 0,
+        pending: pendingRes.success && pendingRes.data ? pendingRes.data.length : 0,
+        active: jobsRes.success && jobsRes.data ? jobsRes.data.length : 0,
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) return <LoadingSpinner />
+
+  return (
+    <div>
+      <h1 className="text-lg font-medium text-gray-900 mb-1">Admin Dashboard</h1>
+      <p className="text-sm text-gray-500 mb-6">Manage the platform</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard label="Total users" value={stats.users} sub="Registered accounts" />
+        <StatCard label="Pending jobs" value={stats.pending} sub="Awaiting approval" />
+        <StatCard label="Active jobs" value={stats.active} sub="Live on platform" />
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 // ── DashboardPage ─────────────────────────────────
 const DashboardPage = () => {

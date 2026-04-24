@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import DashboardLayout from '../components/DashboardLayout'
-import { getAllJobs } from '../api/jobs.api'
+import { getJobsByCompany } from '../api/jobs.api'
 import { getApplicationsByJob, updateApplicationStatus } from '../api/applications.api'
 import { getAllCompanies } from '../api/companies.api'
 import { useAuthStore } from '../store/authStore'
@@ -49,14 +49,11 @@ const ApplicantsPage = () => {
       )
       if (!myCompany) return
 
-      const jobsResponse = await getAllJobs()
+      const jobsResponse = await getJobsByCompany(myCompany.id)
       if (jobsResponse.success && jobsResponse.data) {
-        const myJobs = jobsResponse.data.filter(
-          (job) => job.company_id === myCompany.id
-        )
-        setJobs(myJobs)
-        if (myJobs.length > 0) {
-          setSelectedJob(myJobs[0].id)
+        setJobs(jobsResponse.data)
+        if (jobsResponse.data.length > 0) {
+          setSelectedJob(jobsResponse.data[0].id)
         }
       }
     } catch {
