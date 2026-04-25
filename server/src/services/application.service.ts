@@ -1,6 +1,7 @@
 import * as companyModel from "../models/company.model";
 import * as applicationModel from "../models/application.model";
 import * as jobModel from "../models/job.model";
+import * as userModel from "../models/user.model";
 import { notifyUser } from "../websocket/ws.server";
 import emailQueue from "../queues/email.queue";
 
@@ -24,8 +25,8 @@ export async function applyToJob(
     applicant_id,
     cover_letter,
   );
-  // Send email notification
   emailQueue.add({
+    type: 'application_received',
     email: applicant_email,
     jobTitle: job.title,
   });
@@ -61,8 +62,18 @@ export async function updateApplicationStatus(
   if (!company) throw new Error("Company not found");
   if (company.owner_id !== userId) throw new Error("Not authorized");
   const update = await applicationModel.updateApplicationStatus(id, status);
-  // Notify applicant about status change
-  notifyUser((application.applicant_id), {
+
+  const applicant = await userModel.findUserById(application.applicant_id);
+  if (applicant) {
+    emailQueue.add({
+      type: 'status_update',
+      email: applicant.email,
+      jobTitle: job.title,
+      status,
+    });
+  }
+
+  notifyUser(application.applicant_id, {
     type: "application_status_update",
     message: `Your application status has been updated to: ${status}`,
     status,
