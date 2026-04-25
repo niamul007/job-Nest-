@@ -1,44 +1,65 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
+import { getAllJobs } from '../api/jobs.api'
+import type { Job } from '../types'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 // ── Hero Section ──────────────────────────────────
-const Hero = () => (
-  <section className="bg-white border-b border-gray-100 px-8 py-20 flex flex-col items-center text-center">
-    <span className="text-xs text-blue-600 bg-blue-50 px-4 py-1 rounded-full mb-6">
-      Trusted by 10,000+ professionals
-    </span>
-    <h1 className="text-4xl font-medium text-gray-900 leading-tight max-w-xl mb-4">
-      Find your next <span className="text-blue-600">dream job</span> with JobNest
-    </h1>
-    <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-8">
-      Connect with top employers and discover opportunities that match your skills and ambitions.
-    </p>
+const Hero = () => {
+  const navigate = useNavigate()
+  const [query, setQuery] = useState('')
 
-    {/* Search bar */}
-    <div className="flex gap-2 w-full max-w-lg mb-5">
-      <input
-        type="text"
-        placeholder="Job title, keyword or company..."
-        className="flex-1 px-4 py-3 text-sm border border-gray-200 rounded-lg bg-gray-50 outline-none focus:border-blue-400"
-      />
-      <button className="text-sm text-white bg-blue-600 px-5 py-3 rounded-lg hover:bg-blue-700 transition whitespace-nowrap">
-        Search jobs
-      </button>
-    </div>
+  return (
+    <section className="bg-white border-b border-gray-100 px-8 py-20 flex flex-col items-center text-center">
+      <span className="text-xs text-blue-600 bg-blue-50 px-4 py-1 rounded-full mb-6">
+        Trusted by 10,000+ professionals
+      </span>
+      <h1 className="text-4xl font-medium text-gray-900 leading-tight max-w-xl mb-4">
+        Find your next <span className="text-blue-600">dream job</span> with JobNest
+      </h1>
+      <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-8">
+        Connect with top employers and discover opportunities that match your skills and ambitions.
+      </p>
 
-    {/* Filter pills */}
-    <div className="flex gap-2 flex-wrap justify-center">
-      {['Remote', 'Full-time', 'Part-time', 'Contract', 'Tech', 'Design', 'Marketing'].map((tag) => (
-        <span
-          key={tag}
-          className="text-xs px-4 py-2 rounded-full border border-gray-200 text-gray-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 cursor-pointer transition"
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          const q = query.trim()
+          navigate(q ? `/jobs?search=${encodeURIComponent(q)}` : '/jobs')
+        }}
+        className="flex gap-2 w-full max-w-lg mb-5"
+      >
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Job title, keyword or company..."
+          className="flex-1 px-4 py-3 text-sm border border-gray-200 rounded-lg bg-gray-50 outline-none focus:border-blue-400"
+        />
+        <button
+          type="submit"
+          className="text-sm text-white bg-blue-600 px-5 py-3 rounded-lg hover:bg-blue-700 transition whitespace-nowrap cursor-pointer"
         >
-          {tag}
-        </span>
-      ))}
-    </div>
-  </section>
-)
+          Search jobs
+        </button>
+      </form>
+
+      {/* Decorative popular category tags — not clickable */}
+      <div className="flex gap-2 flex-wrap justify-center">
+        {['Remote', 'Full-time', 'Part-time', 'Contract', 'Tech', 'Design', 'Marketing'].map((tag) => (
+          <span
+            key={tag}
+            className="text-xs px-4 py-2 rounded-full border border-gray-200 text-gray-500"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </section>
+  )
+}
 
 // ── Trusted By ────────────────────────────────────
 const TrustedBy = () => (
@@ -81,7 +102,7 @@ const employerSteps = [
 ]
 
 const HowItWorks = () => {
-  const [tab, setTab] = React.useState<'applicant' | 'employer'>('applicant')
+  const [tab, setTab] = useState<'applicant' | 'employer'>('applicant')
   const steps = tab === 'applicant' ? applicantSteps : employerSteps
 
   return (
@@ -89,13 +110,12 @@ const HowItWorks = () => {
       <p className="text-xs text-blue-600 uppercase tracking-widest text-center mb-2">How it works</p>
       <h2 className="text-2xl font-medium text-gray-900 text-center mb-8">Get started in 3 simple steps</h2>
 
-      {/* Tabs */}
       <div className="flex gap-2 justify-center mb-10">
         {(['applicant', 'employer'] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`text-sm px-5 py-2 rounded-full border transition ${
+            className={`text-sm px-5 py-2 rounded-full border transition cursor-pointer ${
               tab === t
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'border-gray-200 text-gray-500 hover:border-blue-400'
@@ -106,7 +126,6 @@ const HowItWorks = () => {
         ))}
       </div>
 
-      {/* Steps */}
       <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
         {steps.map((step) => (
           <div key={step.num} className="bg-white border border-gray-100 rounded-xl p-6 text-center">
@@ -149,49 +168,79 @@ const Features = () => (
 )
 
 // ── Latest Jobs ───────────────────────────────────
-const jobs = [
-  { company: 'G', title: 'Senior Frontend Developer', location: 'Google · Remote', tags: ['Full-time', 'React', 'TypeScript'], salary: '$120k – $150k' },
-  { company: 'S', title: 'Backend Engineer', location: 'Stripe · New York', tags: ['Full-time', 'Node.js', 'PostgreSQL'], salary: '$130k – $160k' },
-  { company: 'A', title: 'Product Designer', location: 'Airbnb · San Francisco', tags: ['Full-time', 'Figma', 'UX'], salary: '$110k – $140k' },
-  { company: 'N', title: 'DevOps Engineer', location: 'Netflix · Remote', tags: ['Contract', 'Docker', 'AWS'], salary: '$140k – $180k' },
-]
+const LatestJobs = () => {
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [loading, setLoading] = useState(true)
 
-const LatestJobs = () => (
-  <section className="bg-gray-50 border-b border-gray-100 px-8 py-16">
-    <div className="flex items-center justify-between mb-6 max-w-4xl mx-auto">
-      <h2 className="text-xl font-medium text-gray-900">Latest job openings</h2>
-      <span className="text-sm text-blue-600 cursor-pointer hover:underline">View all jobs →</span>
-    </div>
-    <div className="grid grid-cols-2 gap-4 max-w-4xl mx-auto">
-      {jobs.map((job) => (
-        <div key={job.title} className="bg-white border border-gray-100 rounded-xl p-5 flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 shrink-0">
-              {job.company}
-            </div>
-            <div>
-              <div className="text-sm font-medium text-gray-900">{job.title}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{job.location}</div>
-            </div>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {job.tags.map((tag) => (
-              <span key={tag} className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-            <span className="text-sm font-medium text-blue-600">{job.salary}</span>
-            <button className="text-xs text-white bg-blue-600 px-4 py-1.5 rounded-lg hover:bg-blue-700 transition">
-              Apply now
-            </button>
-          </div>
+  useEffect(() => {
+    getAllJobs()
+      .then((res) => {
+        if (res.success && res.data) {
+          const complete = res.data.filter(
+            (j) => j.title?.trim() && j.location?.trim() && j.type && j.category?.trim()
+          )
+          setJobs(complete.slice(0, 4))
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  return (
+    <section className="bg-gray-50 border-b border-gray-100 px-8 py-16">
+      <div className="flex items-center justify-between mb-6 max-w-4xl mx-auto">
+        <h2 className="text-xl font-medium text-gray-900">Latest job openings</h2>
+        <Link to="/jobs" className="text-sm text-blue-600 hover:underline">View all jobs →</Link>
+      </div>
+
+      {loading ? (
+        <div className="max-w-4xl mx-auto"><LoadingSpinner /></div>
+      ) : jobs.length === 0 ? (
+        <div className="max-w-4xl mx-auto bg-white border border-gray-100 rounded-xl p-10 text-center">
+          <p className="text-gray-400 text-sm">No active jobs right now</p>
         </div>
-      ))}
-    </div>
-  </section>
-)
+      ) : (
+        <div className="grid grid-cols-2 gap-4 max-w-4xl mx-auto">
+          {jobs.map((job) => (
+            <Link
+              key={job.id}
+              to={`/jobs/${job.id}`}
+              className="bg-white border border-gray-100 rounded-xl p-5 flex flex-col gap-3 hover:border-blue-200 hover:shadow-sm transition"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 shrink-0">
+                  {job.title.slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-gray-900">{job.title}</div>
+                  <div className="text-xs text-gray-500 mt-0.5">{job.location}</div>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <span className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+                  {job.type}
+                </span>
+                <span className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+                  {job.category}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                {job.salary_min && job.salary_max ? (
+                  <span className="text-sm font-medium text-blue-600">
+                    ${job.salary_min}k – ${job.salary_max}k
+                  </span>
+                ) : (
+                  <span className="text-sm text-gray-400">Salary not specified</span>
+                )}
+                <span className="text-xs text-blue-600">View job →</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
 
 // ── Testimonials ──────────────────────────────────
 const testimonials = [
@@ -229,51 +278,36 @@ const CTA = () => (
     <h2 className="text-2xl font-medium text-white mb-3">Ready to find your next opportunity?</h2>
     <p className="text-sm text-blue-200 mb-8">Join thousands of professionals already using JobNest</p>
     <div className="flex gap-3 justify-center">
-      <button className="text-sm text-blue-600 bg-white font-medium px-6 py-2.5 rounded-lg hover:bg-blue-50 transition">
+      <Link
+        to="/register"
+        className="text-sm text-blue-600 bg-white font-medium px-6 py-2.5 rounded-lg hover:bg-blue-50 transition"
+      >
         Create free account
-      </button>
-      <button className="text-sm text-white border border-white/30 px-6 py-2.5 rounded-lg hover:bg-blue-700 transition">
+      </Link>
+      <Link
+        to="/register"
+        className="text-sm text-white border border-white/30 px-6 py-2.5 rounded-lg hover:bg-blue-700 transition"
+      >
         Post a job
-      </button>
+      </Link>
     </div>
   </section>
 )
 
-// ── Footer ────────────────────────────────────────
-const Footer = () => (
-  <footer className="bg-white border-t border-gray-100 px-8 py-6 flex items-center justify-between">
-    <div className="flex items-center gap-2">
-      <div className="w-2 h-2 rounded-full bg-blue-600"></div>
-      <span className="text-base font-medium text-blue-600">JobNest</span>
-    </div>
-    <div className="flex gap-6">
-      {['Jobs', 'Companies', 'About', 'Contact'].map((link) => (
-        <span key={link} className="text-sm text-gray-500 hover:text-gray-900 cursor-pointer transition">
-          {link}
-        </span>
-      ))}
-    </div>
-    <span className="text-xs text-gray-400">© 2026 JobNest. All rights reserved.</span>
-  </footer>
-)
-
 // ── HomePage ──────────────────────────────────────
-
-const HomePage = () => {
-  return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <Hero />
-      <TrustedBy />
-      <Stats />
-      <HowItWorks />
-      <Features />
-      <LatestJobs />
-      <Testimonials />
-      <CTA />
-      <Footer />
-    </div>
-  )
-}
+const HomePage = () => (
+  <div className="min-h-screen bg-white">
+    <Navbar />
+    <Hero />
+    <TrustedBy />
+    <Stats />
+    <HowItWorks />
+    <Features />
+    <LatestJobs />
+    <Testimonials />
+    <CTA />
+    <Footer />
+  </div>
+)
 
 export default HomePage
