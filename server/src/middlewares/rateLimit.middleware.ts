@@ -3,7 +3,7 @@ import { redisClient } from '../config/redis';
 import ApiResponse from '../utils/ApiResponse';
 
 const WINDOW = 900;
-const MAX = 100;
+const MAX = 500;
 
 export const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   try {
