@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { getAllJobs } from '../api/jobs.api'
 import type { Job } from '../types'
 import { JobType } from '../types'
@@ -46,10 +47,11 @@ const typeOptions = [
 ]
 
 const JobsPage = () => {
+  const [searchParams] = useSearchParams()
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(searchParams.get('search') ?? '')
   const [typeFilter, setTypeFilter] = useState('all')
 
   useEffect(() => {
@@ -148,6 +150,7 @@ const JobsPage = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   )
 }

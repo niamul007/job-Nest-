@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { getJobById } from '../api/jobs.api'
 import { applyForJob } from '../api/applications.api'
@@ -39,7 +40,7 @@ const JobDetailPage = () => {
     }
   }
 
-  const handleApply = async (e: React.FormEvent) => {
+  const handleApply = async (e: { preventDefault(): void }) => {
     e.preventDefault()
     if (!isAuthenticated) {
       navigate('/login')
@@ -81,7 +82,7 @@ const JobDetailPage = () => {
             {/* Header card */}
             <div className="bg-white border border-gray-100 rounded-xl p-6">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-lg font-medium text-blue-600 flex-shrink-0">
+                <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-lg font-medium text-blue-600 shrink-0">
                   {job.title.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="flex-1">
@@ -200,6 +201,7 @@ const JobDetailPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
