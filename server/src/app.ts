@@ -8,25 +8,33 @@ import companyRoutes from './routes/company.routes';
 import jobRoutes from './routes/job.routes';
 import applicationRoutes from './routes/application.routes';
 import { rateLimiter } from './middlewares/rateLimit.middleware';
+import userRoutes from './routes/user.routes'
+
 
 
 
 
 const app = express();
+
+// CORS must be first — ensures Access-Control-Allow-Origin is present on every
+// response, including 429s from the rate limiter and OPTIONS preflight requests.
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(rateLimiter);
-  
-// Middleware
-app.use(cors());
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(express.json());
+app.use(express.json()); // ← must be before routes
+
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/users', userRoutes);
 
-
-//test
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
