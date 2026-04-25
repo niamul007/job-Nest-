@@ -119,3 +119,12 @@ export const getByCompany = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const getPending = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const jobs = await jobService.getPendingJobs();
+    res.status(200).json(ApiResponse.success("Pending jobs fetched", jobs));
+  } catch (error) {
+    next(error);
+  }
+};
