@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import CompanyAvatar from '../components/CompanyAvatar'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { getJobById } from '../api/jobs.api'
 import { applyForJob } from '../api/applications.api'
@@ -82,9 +83,7 @@ const JobDetailPage = () => {
             {/* Header card */}
             <div className="bg-white border border-gray-100 rounded-xl p-6">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-lg font-medium text-blue-600 shrink-0">
-                  {job.title.slice(0, 2).toUpperCase()}
-                </div>
+                <CompanyAvatar name={job.company?.name || job.title} logo_url={job.company?.logo_url} size="lg" />
                 <div className="flex-1">
                   <h1 className="text-xl font-medium text-gray-900 mb-1">{job.title}</h1>
                   <p className="text-sm text-gray-500 mb-3">{job.location}</p>

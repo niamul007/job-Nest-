@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import CompanyAvatar from '../components/CompanyAvatar'
 import { getAllJobs } from '../api/jobs.api'
 import type { Job } from '../types'
 import { JobType } from '../types'
@@ -13,9 +14,7 @@ const JobCard = ({ job }: { job: Job }) => (
     className="block bg-white border border-gray-100 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition"
   >
     <div className="flex items-start gap-4">
-      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 shrink-0">
-        {job.title.slice(0, 2).toUpperCase()}
-      </div>
+      <CompanyAvatar name={job.company?.name || job.title} logo_url={job.company?.logo_url} size="md" />
       <div className="flex-1 min-w-0">
         <h3 className="text-sm font-medium text-gray-900 mb-1">{job.title}</h3>
         <p className="text-xs text-gray-500 mb-3">{job.location}</p>

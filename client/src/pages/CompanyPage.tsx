@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DashboardLayout from '../components/DashboardLayout'
+import CompanyAvatar from '../components/CompanyAvatar'
 import { getAllCompanies, createCompany, updateCompany } from '../api/companies.api'
 import type { Company } from '../types'
 import { useAuthStore } from '../store/authStore'
@@ -137,9 +138,7 @@ const CompanyPage = () => {
       {company && !isEditing ? (
         <div className="bg-white border border-gray-100 rounded-xl p-6 flex flex-col gap-5">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-lg font-medium text-blue-600">
-              {company.name.slice(0, 2).toUpperCase()}
-            </div>
+            <CompanyAvatar name={company.name} logo_url={company.logo_url} size="lg" />
             <div>
               <h2 className="text-base font-medium text-gray-900">{company.name}</h2>
               {company.website && (
@@ -212,6 +211,7 @@ const CompanyPage = () => {
                 placeholder="https://yourcompany.com/logo.png"
                 className="px-4 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 bg-gray-50"
               />
+              <p className="text-xs text-gray-400">Enter a direct image URL (e.g. your company logo hosted online)</p>
             </div>
           </div>
 
