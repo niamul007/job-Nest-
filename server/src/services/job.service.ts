@@ -138,3 +138,7 @@ export async function approveJob(id: string) {
 export async function getJobsByCompany(company_id: string) {
   return await jobModel.findJobsByCompany(company_id);
 }
+
+export async function getPendingJobs() {
+  return await jobModel.findPendingJobs();
+}
