@@ -15,7 +15,9 @@ const Navbar = () => {
       
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        </svg>
         <span className="text-xl font-medium text-blue-600">JobNest</span>
       </Link>
 
@@ -29,6 +31,9 @@ const Navbar = () => {
         </Link>
         <Link to="/about" className="text-sm text-gray-500 hover:text-gray-900 transition">
           About
+        </Link>
+        <Link to="/contact" className="text-sm text-gray-500 hover:text-gray-900 transition">
+          Contact
         </Link>
 
         <div className="w-px h-5 bg-gray-200"></div>

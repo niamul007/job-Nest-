@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { UserRole } from '../types'
+import Footer from './Footer'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -119,7 +120,9 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       `}>
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 px-2 mb-6">
-          <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+          <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+          </svg>
           <span className="text-lg font-medium text-blue-600">JobNest</span>
         </Link>
 
@@ -160,7 +163,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 
         {/* User profile */}
         <div className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
-          <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-xs font-medium text-blue-600 flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-xs font-medium text-blue-600 shrink-0">
             {user?.name.slice(0, 2).toUpperCase()}
           </div>
           <div className="overflow-hidden">
@@ -197,14 +200,19 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </svg>
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+            <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            </svg>
             <span className="text-base font-medium text-blue-600">JobNest</span>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
+        <main className="flex-1 overflow-y-auto flex flex-col">
+          <div className="flex-1 p-6">
+            {children}
+          </div>
+          <Footer />
         </main>
       </div>
     </div>
