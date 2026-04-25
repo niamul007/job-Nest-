@@ -16,6 +16,9 @@ import ApplicantsPage from "./pages/ApplicantsPage";
 import ProfilePage from "./pages/ProfilePage";
 import PendingJobsPage from "./pages/PendingJobsPage";
 import AllUsersPage from "./pages/AllUsersPage";
+import CompaniesPage from "./pages/CompaniesPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -106,6 +109,10 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/companies" element={<CompaniesPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
