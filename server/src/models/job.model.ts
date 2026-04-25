@@ -117,3 +117,9 @@ export async function findJobsByCompany(company_id: string): Promise<Job[]> {
   const result = await pool.query(sql, [company_id]);
   return result.rows;
 }
+
+export async function findPendingJobs(): Promise<Job[]> {
+  const sql = `SELECT * FROM jobs WHERE status = 'pending' ORDER BY created_at DESC`;
+  const result = await pool.query(sql);
+  return result.rows;
+}

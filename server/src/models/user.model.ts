@@ -13,3 +13,9 @@ export async function createUser(name: string ,email:string,password:string,role
     const result = await pool.query(sql,[name,email,password,role]);
     return result.rows[0];
 }
+
+export async function findUserById(id: string): Promise<User | null> {
+    const sql = 'SELECT id, name, email, role, created_at FROM users WHERE id = $1';
+    const result = await pool.query(sql, [id]);
+    return result.rows[0] || null;
+}
