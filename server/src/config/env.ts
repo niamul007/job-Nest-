@@ -46,9 +46,9 @@ export const env = {
 
   // Email
   nodemailer: {
-    host: get("HOST"),
-    port: parseInt(get("PORT"), 10),
-    user: get("USER"),
-    pass: get("PASS"),
+    host: get("EMAIL_HOST"),
+    port: parseInt(get("EMAIL_PORT"), 10),
+    user: get("EMAIL_USER"),
+    pass: get("EMAIL_PASS"),
   },
 };
