@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import {
+  Briefcase, Building2, Users, TrendingUp,
+  UserPlus, Search, CheckCircle, FileText, Bell, LayoutDashboard, ShieldCheck,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CompanyAvatar from '../components/CompanyAvatar'
 import { getAllJobs } from '../api/jobs.api'
 import type { Job } from '../types'
+import { UserRole } from '../types'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { useAuthStore } from '../store/authStore'
 
 // ── Hero Section ──────────────────────────────────
 const Hero = () => {
-  const navigate = useNavigate()
-  const [query, setQuery] = useState('')
+  const { isAuthenticated, user } = useAuthStore()
+  const postJobPath = isAuthenticated && user?.role === UserRole.Employer
+    ? '/dashboard/jobs/create'
+    : '/register'
 
   return (
     <section className="bg-white border-b border-gray-100 px-8 py-20 flex flex-col items-center text-center">
@@ -23,40 +32,19 @@ const Hero = () => {
       <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-8">
         Connect with top employers and discover opportunities that match your skills and ambitions.
       </p>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          const q = query.trim()
-          navigate(q ? `/jobs?search=${encodeURIComponent(q)}` : '/jobs')
-        }}
-        className="flex gap-2 w-full max-w-lg mb-5"
-      >
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Job title, keyword or company..."
-          className="flex-1 px-4 py-3 text-sm border border-gray-200 rounded-lg bg-gray-50 outline-none focus:border-blue-400"
-        />
-        <button
-          type="submit"
-          className="text-sm text-white bg-blue-600 px-5 py-3 rounded-lg hover:bg-blue-700 transition whitespace-nowrap cursor-pointer"
+      <div className="flex gap-3 justify-center">
+        <Link
+          to="/jobs"
+          className="text-sm text-white bg-blue-600 font-medium px-7 py-3 rounded-lg hover:bg-blue-700 transition"
         >
-          Search jobs
-        </button>
-      </form>
-
-      {/* Decorative popular category tags — not clickable */}
-      <div className="flex gap-2 flex-wrap justify-center">
-        {['Remote', 'Full-time', 'Part-time', 'Contract', 'Tech', 'Design', 'Marketing'].map((tag) => (
-          <span
-            key={tag}
-            className="text-xs px-4 py-2 rounded-full border border-gray-200 text-gray-500"
-          >
-            {tag}
-          </span>
-        ))}
+          Browse Jobs
+        </Link>
+        <Link
+          to={postJobPath}
+          className="text-sm text-blue-600 bg-blue-50 font-medium px-7 py-3 rounded-lg hover:bg-blue-100 transition border border-blue-200"
+        >
+          Post a Job
+        </Link>
       </div>
     </section>
   )
@@ -73,33 +61,43 @@ const TrustedBy = () => (
 )
 
 // ── Stats ─────────────────────────────────────────
+const statItems: { icon: LucideIcon; number: string; label: string }[] = [
+  { icon: Briefcase,   number: '12k+', label: 'Active jobs' },
+  { icon: Building2,   number: '3.5k+', label: 'Companies' },
+  { icon: Users,       number: '50k+', label: 'Job seekers' },
+  { icon: TrendingUp,  number: '98%',  label: 'Success rate' },
+]
+
 const Stats = () => (
   <section className="bg-white border-b border-gray-100 grid grid-cols-4">
-    {[
-      { number: '12k+', label: 'Active jobs' },
-      { number: '3.5k+', label: 'Companies' },
-      { number: '50k+', label: 'Job seekers' },
-      { number: '98%', label: 'Success rate' },
-    ].map((stat, i) => (
-      <div key={i} className={`py-8 text-center ${i < 3 ? 'border-r border-gray-100' : ''}`}>
-        <div className="text-3xl font-medium text-blue-600 mb-1">{stat.number}</div>
-        <div className="text-sm text-gray-500">{stat.label}</div>
-      </div>
-    ))}
+    {statItems.map((stat, i) => {
+      const Icon = stat.icon
+      return (
+        <div key={i} className={`py-8 text-center ${i < 3 ? 'border-r border-gray-100' : ''}`}>
+          <div className="flex justify-center mb-2">
+            <Icon className="w-5 h-5 text-blue-400" />
+          </div>
+          <div className="text-3xl font-medium text-blue-600 mb-1">{stat.number}</div>
+          <div className="text-sm text-gray-500">{stat.label}</div>
+        </div>
+      )
+    })}
   </section>
 )
 
 // ── How It Works ──────────────────────────────────
-const applicantSteps = [
-  { num: 1, title: 'Create your profile', desc: 'Sign up and build your professional profile in minutes.' },
-  { num: 2, title: 'Browse and apply', desc: 'Search thousands of jobs and apply with one click.' },
-  { num: 3, title: 'Get hired', desc: 'Track your applications and land your dream job.' },
+interface Step { num: number; icon: LucideIcon; title: string; desc: string }
+
+const applicantSteps: Step[] = [
+  { num: 1, icon: UserPlus,     title: 'Create your profile', desc: 'Sign up and build your professional profile in minutes.' },
+  { num: 2, icon: Search,       title: 'Browse and apply',    desc: 'Search thousands of jobs and apply with one click.' },
+  { num: 3, icon: CheckCircle,  title: 'Get hired',           desc: 'Track your applications and land your dream job.' },
 ]
 
-const employerSteps = [
-  { num: 1, title: 'Create your company', desc: 'Register and set up your company profile on JobNest.' },
-  { num: 2, title: 'Post a job', desc: 'Create detailed job listings and reach thousands of candidates.' },
-  { num: 3, title: 'Hire the best', desc: 'Review applications and find your perfect candidate fast.' },
+const employerSteps: Step[] = [
+  { num: 1, icon: Building2,    title: 'Create your company', desc: 'Register and set up your company profile on JobNest.' },
+  { num: 2, icon: FileText,     title: 'Post a job',          desc: 'Create detailed job listings and reach thousands of candidates.' },
+  { num: 3, icon: CheckCircle,  title: 'Hire the best',       desc: 'Review applications and find your perfect candidate fast.' },
 ]
 
 const HowItWorks = () => {
@@ -128,28 +126,31 @@ const HowItWorks = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
-        {steps.map((step) => (
-          <div key={step.num} className="bg-white border border-gray-100 rounded-xl p-6 text-center">
-            <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 mx-auto mb-4">
-              {step.num}
+        {steps.map((step) => {
+          const Icon = step.icon
+          return (
+            <div key={step.num} className="bg-white border border-gray-100 rounded-xl p-6 text-center">
+              <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
+                <Icon className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="text-sm font-medium text-gray-900 mb-2">{step.title}</div>
+              <div className="text-xs text-gray-500 leading-relaxed">{step.desc}</div>
             </div>
-            <div className="text-sm font-medium text-gray-900 mb-2">{step.title}</div>
-            <div className="text-xs text-gray-500 leading-relaxed">{step.desc}</div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
 }
 
 // ── Features ──────────────────────────────────────
-const features = [
-  { title: 'Smart job search', desc: 'Filter by location, salary, type and category to find exactly what you need.' },
-  { title: 'Top employers', desc: 'Connect directly with verified companies actively looking for talent.' },
-  { title: 'Easy applications', desc: 'Apply in minutes and track all applications from one clean dashboard.' },
-  { title: 'Real time alerts', desc: 'Get instant notifications when your application status changes.' },
-  { title: 'Employer dashboard', desc: 'Post jobs, manage applicants and grow your team from one place.' },
-  { title: 'Verified listings', desc: 'Every job posting is reviewed and approved before going live.' },
+const features: { icon: LucideIcon; title: string; desc: string }[] = [
+  { icon: Search,          title: 'Smart job search',    desc: 'Filter by location, salary, type and category to find exactly what you need.' },
+  { icon: Building2,       title: 'Top employers',       desc: 'Connect directly with verified companies actively looking for talent.' },
+  { icon: FileText,        title: 'Easy applications',   desc: 'Apply in minutes and track all applications from one clean dashboard.' },
+  { icon: Bell,            title: 'Real time alerts',    desc: 'Get instant notifications when your application status changes.' },
+  { icon: LayoutDashboard, title: 'Employer dashboard',  desc: 'Post jobs, manage applicants and grow your team from one place.' },
+  { icon: ShieldCheck,     title: 'Verified listings',   desc: 'Every job posting is reviewed and approved before going live.' },
 ]
 
 const Features = () => (
@@ -157,13 +158,18 @@ const Features = () => (
     <p className="text-xs text-blue-600 uppercase tracking-widest text-center mb-2">Why JobNest</p>
     <h2 className="text-2xl font-medium text-gray-900 text-center mb-10">Everything you need to land your next role</h2>
     <div className="grid grid-cols-3 gap-4 max-w-4xl mx-auto">
-      {features.map((f) => (
-        <div key={f.title} className="bg-gray-50 border border-gray-100 rounded-xl p-6">
-          <div className="w-9 h-9 rounded-lg bg-blue-50 mb-4"></div>
-          <div className="text-sm font-medium text-gray-900 mb-2">{f.title}</div>
-          <div className="text-xs text-gray-500 leading-relaxed">{f.desc}</div>
-        </div>
-      ))}
+      {features.map((f) => {
+        const Icon = f.icon
+        return (
+          <div key={f.title} className="bg-gray-50 border border-gray-100 rounded-xl p-6">
+            <div className="w-9 h-9 rounded-lg bg-blue-50 mb-4 flex items-center justify-center">
+              <Icon className="w-5 h-5 text-blue-600" />
+            </div>
+            <div className="text-sm font-medium text-gray-900 mb-2">{f.title}</div>
+            <div className="text-xs text-gray-500 leading-relaxed">{f.desc}</div>
+          </div>
+        )
+      })}
     </div>
   </section>
 )
