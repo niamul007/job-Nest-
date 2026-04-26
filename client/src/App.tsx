@@ -17,6 +17,7 @@ import ProfilePage from "./pages/ProfilePage";
 import PendingJobsPage from "./pages/PendingJobsPage";
 import AllUsersPage from "./pages/AllUsersPage";
 import CompaniesPage from "./pages/CompaniesPage";
+import CompanyDetailPage from "./pages/CompanyDetailPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 
@@ -111,6 +112,7 @@ function App() {
         />
 
         <Route path="/companies" element={<CompaniesPage />} />
+        <Route path="/companies/:id" element={<CompanyDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
 
