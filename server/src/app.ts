@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger';
 import authRoutes from './routes/auth.routes';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import companyRoutes from './routes/company.routes';
@@ -25,6 +27,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(rateLimiter);
+
+// Swagger UI — mounted before helmet so CSP headers don't block its inline scripts
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+
 app.use(helmet());
 app.use(morgan('dev'));
 app.use(express.json()); // ← must be before routes
