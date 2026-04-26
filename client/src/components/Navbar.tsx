@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { ChevronDown } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 
 const Navbar = () => {
@@ -12,7 +13,7 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-10 bg-white border-b border-gray-100 px-8 h-16 flex items-center justify-between">
-      
+
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2">
         <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
@@ -48,7 +49,10 @@ const Navbar = () => {
               <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-xs font-medium text-blue-600">
                 {user?.name.slice(0, 2).toUpperCase()}
               </div>
-              <span className="text-sm text-gray-700">{user?.name}</span>
+              <div className="flex items-center gap-1">
+                <span className="text-sm text-gray-700">{user?.name}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+              </div>
               <button
                 onClick={handleLogout}
                 className="text-sm text-gray-500 hover:text-gray-900 transition"

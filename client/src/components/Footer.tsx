@@ -8,13 +8,22 @@ const Footer = () => (
       </svg>
       <span className="text-base font-medium text-blue-600">JobNest</span>
     </div>
+
     <div className="flex gap-6">
       <Link to="/jobs"      className="text-sm text-gray-500 hover:text-gray-900 transition">Jobs</Link>
       <Link to="/companies" className="text-sm text-gray-500 hover:text-gray-900 transition">Companies</Link>
       <Link to="/about"     className="text-sm text-gray-500 hover:text-gray-900 transition">About</Link>
       <Link to="/contact"   className="text-sm text-gray-500 hover:text-gray-900 transition">Contact</Link>
     </div>
-    <span className="text-xs text-gray-400">© 2026 JobNest. All rights reserved.</span>
+
+    <div className="flex items-center gap-4">
+      <div className="flex gap-3">
+        <a href="#" className="text-xs text-gray-400 hover:text-gray-600 transition">Twitter</a>
+        <a href="#" className="text-xs text-gray-400 hover:text-gray-600 transition">LinkedIn</a>
+        <a href="#" className="text-xs text-gray-400 hover:text-gray-600 transition">GitHub</a>
+      </div>
+      <span className="text-xs text-gray-400">© 2026 JobNest. All rights reserved.</span>
+    </div>
   </footer>
 )
 

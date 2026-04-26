@@ -1,5 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import {
+  LayoutDashboard, FileText, Search, Briefcase, Users,
+  Building2, User, Clock, LogOut, Menu,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { UserRole } from '../types'
 import Footer from './Footer'
@@ -8,81 +13,32 @@ interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
+interface NavItem {
+  label: string
+  path: string
+  icon: LucideIcon
+}
+
 // ── Nav items per role ────────────────────────────
-const applicantNav = [
-  { label: 'Overview', path: '/dashboard', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-    </svg>
-  )},
-  { label: 'My Applications', path: '/dashboard/applications', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
-    </svg>
-  )},
-  { label: 'Browse Jobs', path: '/jobs', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-  )},
-  { label: 'Profile', path: '/dashboard/profile', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-  )},
+const applicantNav: NavItem[] = [
+  { label: 'Overview',        path: '/dashboard',              icon: LayoutDashboard },
+  { label: 'My Applications', path: '/dashboard/applications', icon: FileText },
+  { label: 'Browse Jobs',     path: '/jobs',                   icon: Search },
+  { label: 'Profile',         path: '/dashboard/profile',      icon: User },
 ]
 
-const employerNav = [
-  { label: 'Overview', path: '/dashboard', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-    </svg>
-  )},
-  { label: 'My Jobs', path: '/dashboard/jobs', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-    </svg>
-  )},
-  { label: 'Applicants', path: '/dashboard/applicants', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-    </svg>
-  )},
-  { label: 'Company', path: '/dashboard/company', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      <polyline points="9 22 9 12 15 12 15 22"/>
-    </svg>
-  )},
-  { label: 'Profile', path: '/dashboard/profile', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-    </svg>
-  )},
+const employerNav: NavItem[] = [
+  { label: 'Overview',   path: '/dashboard',            icon: LayoutDashboard },
+  { label: 'My Jobs',    path: '/dashboard/jobs',        icon: Briefcase },
+  { label: 'Applicants', path: '/dashboard/applicants',  icon: Users },
+  { label: 'Company',    path: '/dashboard/company',     icon: Building2 },
+  { label: 'Profile',    path: '/dashboard/profile',     icon: User },
 ]
 
-const adminNav = [
-  { label: 'Overview', path: '/dashboard', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-    </svg>
-  )},
-  { label: 'Pending Jobs', path: '/dashboard/pending', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-    </svg>
-  )},
-  { label: 'All Users', path: '/dashboard/users', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-    </svg>
-  )},
+const adminNav: NavItem[] = [
+  { label: 'Overview',      path: '/dashboard',         icon: LayoutDashboard },
+  { label: 'Pending Jobs',  path: '/dashboard/pending', icon: Clock },
+  { label: 'All Users',     path: '/dashboard/users',   icon: Users },
 ]
 
 // ── Sidebar ───────────────────────────────────────
@@ -128,21 +84,24 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 
         {/* Nav items */}
         <nav className="flex flex-col gap-1 flex-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition cursor-pointer ${
-                location.pathname === item.path
-                  ? 'bg-blue-50 text-blue-600 font-medium'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const Icon = item.icon
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={onClose}
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition cursor-pointer ${
+                  location.pathname === item.path
+                    ? 'bg-blue-50 text-blue-600 font-medium'
+                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Divider */}
@@ -153,11 +112,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 transition cursor-pointer w-full mb-3"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
+          <LogOut className="w-4 h-4" />
           Logout
         </button>
 
@@ -193,11 +148,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             onClick={() => setSidebarOpen(true)}
             className="p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
           >
-            <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <line x1="3" y1="6" x2="21" y2="6"/>
-              <line x1="3" y1="12" x2="21" y2="12"/>
-              <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
+            <Menu className="w-5 h-5 text-gray-600" />
           </button>
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
