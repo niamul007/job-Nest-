@@ -1,34 +1,44 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Search, Globe } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import CompanyAvatar from '../components/CompanyAvatar'
 import { getAllCompanies } from '../api/companies.api'
 import type { Company } from '../types'
 import LoadingSpinner from '../components/LoadingSpinner'
 
-const CompanyCard = ({ company }: { company: Company }) => (
-  <div className="bg-white border border-gray-100 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition">
-    <div className="flex items-start gap-4">
-      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-sm font-medium text-blue-600 shrink-0">
-        {company.name.slice(0, 2).toUpperCase()}
-      </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-medium text-gray-900 mb-1">{company.name}</h3>
-        <p className="text-xs text-gray-500 leading-relaxed mb-2 line-clamp-2">{company.description}</p>
-        {company.website && (
-          <a
-            href={company.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-blue-600 hover:underline break-all"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {company.website}
-          </a>
-        )}
+const CompanyCard = ({ company }: { company: Company }) => {
+  const navigate = useNavigate()
+
+  return (
+    <div
+      className="bg-white border border-gray-100 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition cursor-pointer"
+      onClick={() => navigate(`/companies/${company.id}`)}
+    >
+      <div className="flex items-start gap-4">
+        <CompanyAvatar name={company.name} logo_url={company.logo_url} size="md" />
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-medium text-gray-900 mb-1">{company.name}</h3>
+          <p className="text-xs text-gray-500 leading-relaxed mb-2 line-clamp-2">{company.description}</p>
+          {company.website && (
+            <a
+              href={company.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-blue-600 hover:underline break-all flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Globe className="w-3 h-3 shrink-0" />
+              {company.website}
+            </a>
+          )}
+        </div>
+        <span className="text-xs text-blue-600 shrink-0 mt-1">View →</span>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 const CompaniesPage = () => {
   const [companies, setCompanies] = useState<Company[]>([])
@@ -61,10 +71,10 @@ const CompaniesPage = () => {
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-8 py-10">
+      <div className="max-w-4xl mx-auto px-8 py-10 flex-1 w-full">
 
         {/* Header */}
         <div className="mb-8">
@@ -76,12 +86,7 @@ const CompaniesPage = () => {
 
         {/* Search */}
         <div className="relative mb-6">
-          <svg
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
-          >
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search companies by name or description..."

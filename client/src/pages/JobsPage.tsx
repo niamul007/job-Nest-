@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { Search, MapPin, Briefcase } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CompanyAvatar from '../components/CompanyAvatar'
@@ -17,9 +18,13 @@ const JobCard = ({ job }: { job: Job }) => (
       <CompanyAvatar name={job.company?.name || job.title} logo_url={job.company?.logo_url} size="md" />
       <div className="flex-1 min-w-0">
         <h3 className="text-sm font-medium text-gray-900 mb-1">{job.title}</h3>
-        <p className="text-xs text-gray-500 mb-3">{job.location}</p>
+        <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+          <MapPin className="w-3 h-3 shrink-0" />
+          {job.location}
+        </p>
         <div className="flex gap-2 flex-wrap">
-          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+          <span className="text-xs px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500 flex items-center gap-1">
+            <Briefcase className="w-3 h-3" />
             {job.type}
           </span>
           <span className="text-xs px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
@@ -83,10 +88,10 @@ const JobsPage = () => {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-8 py-10">
+      <div className="max-w-4xl mx-auto px-8 py-10 flex-1 w-full">
 
         {/* Header */}
         <div className="mb-8">
@@ -98,12 +103,7 @@ const JobsPage = () => {
 
         {/* Search */}
         <div className="relative mb-4">
-          <svg
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}
-          >
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search by title, location, or category..."

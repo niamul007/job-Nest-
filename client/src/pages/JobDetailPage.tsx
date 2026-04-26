@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { MapPin, Briefcase, Tag, DollarSign, Calendar } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CompanyAvatar from '../components/CompanyAvatar'
@@ -9,6 +10,9 @@ import { applyForJob } from '../api/applications.api'
 import { useAuthStore } from '../store/authStore'
 import type { Job } from '../types'
 import { UserRole } from '../types'
+
+const formatDate = (dateStr: string) =>
+  new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
 const JobDetailPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -71,10 +75,10 @@ const JobDetailPage = () => {
   if (!job) return <><Navbar /><div className="text-center py-20 text-gray-400">Job not found</div></>
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-8 py-10">
+      <div className="max-w-4xl mx-auto px-8 py-10 flex-1 w-full">
         <div className="grid grid-cols-3 gap-6">
 
           {/* Left — Job details */}
@@ -86,18 +90,32 @@ const JobDetailPage = () => {
                 <CompanyAvatar name={job.company?.name || job.title} logo_url={job.company?.logo_url} size="lg" />
                 <div className="flex-1">
                   <h1 className="text-xl font-medium text-gray-900 mb-1">{job.title}</h1>
-                  <p className="text-sm text-gray-500 mb-3">{job.location}</p>
+
+                  <p className="text-sm text-gray-500 mb-3 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 shrink-0 text-gray-400" />
+                    {job.location}
+                  </p>
+
                   <div className="flex gap-2 flex-wrap">
-                    <span className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+                    <span className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500 flex items-center gap-1">
+                      <Briefcase className="w-3 h-3" />
                       {job.type}
                     </span>
-                    <span className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500">
+                    <span className="text-xs px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-500 flex items-center gap-1">
+                      <Tag className="w-3 h-3" />
                       {job.category}
                     </span>
                     <span className="text-xs px-3 py-1 rounded-full bg-green-50 border border-green-100 text-green-700">
                       {job.status}
                     </span>
                   </div>
+
+                  {job.created_at && (
+                    <p className="text-xs text-gray-400 mt-3 flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      Posted {formatDate(job.created_at)}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,8 +137,9 @@ const JobDetailPage = () => {
               {job.salary_min && job.salary_max && (
                 <div className="mb-4 pb-4 border-b border-gray-100">
                   <p className="text-xs text-gray-500 mb-1">Salary range</p>
-                  <p className="text-lg font-medium text-blue-600">
-                    ${job.salary_min}k – ${job.salary_max}k
+                  <p className="text-lg font-medium text-blue-600 flex items-center gap-1">
+                    <DollarSign className="w-4 h-4" />
+                    {job.salary_min}k – {job.salary_max}k
                   </p>
                 </div>
               )}

@@ -1,12 +1,27 @@
 import { Link } from 'react-router-dom'
+import { Target, Eye, Zap, Scale, Calendar, Users, Building2, Briefcase } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
+const values: { icon: LucideIcon; title: string; desc: string }[] = [
+  { icon: Eye,   title: 'Transparency', desc: 'Every job listing is reviewed before going live. No ghost postings, no misleading titles.' },
+  { icon: Zap,   title: 'Speed',        desc: 'Apply in minutes. Employers review and respond quickly. No endless back-and-forth.' },
+  { icon: Scale, title: 'Fairness',     desc: 'We surface opportunities based on fit, not connections. Everyone gets a fair shot.' },
+]
+
+const aboutStats: { icon: LucideIcon; number: string; label: string }[] = [
+  { icon: Calendar,  number: '2023',  label: 'Founded' },
+  { icon: Users,     number: '50k+',  label: 'Job seekers' },
+  { icon: Building2, number: '3.5k+', label: 'Companies' },
+  { icon: Briefcase, number: '12k+',  label: 'Active jobs' },
+]
+
 const AboutPage = () => (
-  <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen bg-gray-50 flex flex-col">
     <Navbar />
 
-    <div className="max-w-3xl mx-auto px-8 py-16">
+    <div className="max-w-3xl mx-auto px-8 py-16 flex-1 w-full">
 
       {/* Header */}
       <div className="text-center mb-12">
@@ -22,7 +37,10 @@ const AboutPage = () => (
 
       {/* Mission */}
       <div className="bg-white border border-gray-100 rounded-xl p-8 mb-6">
-        <h2 className="text-base font-medium text-gray-900 mb-3">Our mission</h2>
+        <div className="flex items-center gap-2 mb-3">
+          <Target className="w-4 h-4 text-blue-600" />
+          <h2 className="text-base font-medium text-gray-900">Our mission</h2>
+        </div>
         <p className="text-sm text-gray-500 leading-relaxed">
           We're on a mission to remove friction from the hiring process. Whether you're a fresh graduate
           looking for your first role, an experienced professional seeking a new challenge, or an employer
@@ -32,32 +50,34 @@ const AboutPage = () => (
 
       {/* Values */}
       <div className="grid grid-cols-3 gap-4 mb-6">
-        {[
-          { title: 'Transparency', desc: 'Every job listing is reviewed before going live. No ghost postings, no misleading titles.' },
-          { title: 'Speed', desc: 'Apply in minutes. Employers review and respond quickly. No endless back-and-forth.' },
-          { title: 'Fairness', desc: 'We surface opportunities based on fit, not connections. Everyone gets a fair shot.' },
-        ].map((v) => (
-          <div key={v.title} className="bg-white border border-gray-100 rounded-xl p-6">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 mb-3"></div>
-            <div className="text-sm font-medium text-gray-900 mb-2">{v.title}</div>
-            <div className="text-xs text-gray-500 leading-relaxed">{v.desc}</div>
-          </div>
-        ))}
+        {values.map((v) => {
+          const Icon = v.icon
+          return (
+            <div key={v.title} className="bg-white border border-gray-100 rounded-xl p-6">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 mb-3 flex items-center justify-center">
+                <Icon className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="text-sm font-medium text-gray-900 mb-2">{v.title}</div>
+              <div className="text-xs text-gray-500 leading-relaxed">{v.desc}</div>
+            </div>
+          )
+        })}
       </div>
 
       {/* Stats */}
       <div className="bg-white border border-gray-100 rounded-xl p-8 mb-6 grid grid-cols-4 divide-x divide-gray-100">
-        {[
-          { number: '2023', label: 'Founded' },
-          { number: '50k+', label: 'Job seekers' },
-          { number: '3.5k+', label: 'Companies' },
-          { number: '12k+', label: 'Active jobs' },
-        ].map((s) => (
-          <div key={s.label} className="text-center px-4">
-            <div className="text-2xl font-medium text-blue-600 mb-1">{s.number}</div>
-            <div className="text-xs text-gray-500">{s.label}</div>
-          </div>
-        ))}
+        {aboutStats.map((s) => {
+          const Icon = s.icon
+          return (
+            <div key={s.label} className="text-center px-4">
+              <div className="flex justify-center mb-1">
+                <Icon className="w-4 h-4 text-blue-400" />
+              </div>
+              <div className="text-2xl font-medium text-blue-600 mb-1">{s.number}</div>
+              <div className="text-xs text-gray-500">{s.label}</div>
+            </div>
+          )
+        })}
       </div>
 
       {/* CTA */}
