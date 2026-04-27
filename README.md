@@ -8,7 +8,6 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)](https://redis.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 
 **Live demo:** [job-nest-61q5muuou-niamul-s-projects.vercel.app](https://job-nest-61q5muuou-niamul-s-projects.vercel.app/)  
 **API (Railway):** [job-nest-production.up.railway.app](https://job-nest-production.up.railway.app/)  
@@ -31,8 +30,6 @@
 | 🛡️ Rate limiting | Custom Redis-backed rate limiter per IP |
 | 📖 API docs | Swagger UI with JWT auth at `/api/docs` |
 | 📱 Responsive | Mobile-first React frontend with Tailwind CSS v4 |
-| 🐳 Docker | Docker Compose for local development |
-
 ---
 
 ## 🗂️ Tech Stack
