@@ -11,7 +11,8 @@
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 
 **Live demo:** [job-nest-61q5muuou-niamul-s-projects.vercel.app](https://job-nest-61q5muuou-niamul-s-projects.vercel.app/)  
-**API docs:** [Railway backend `/api/docs`](https://job-nest-61q5muuou-niamul-s-projects.vercel.app/) · **Repo:** [github.com/niamul007/job-Nest-](https://github.com/niamul007/job-Nest-)
+**API (Railway):** [job-nest-production.up.railway.app](https://job-nest-production.up.railway.app/)  
+**API docs:** [job-nest-production.up.railway.app/api/docs](https://job-nest-production.up.railway.app/api/docs) · **Repo:** [github.com/niamul007/job-Nest-](https://github.com/niamul007/job-Nest-)
 
 ---
 
@@ -204,6 +205,7 @@ Swagger UI is available at `/api/docs` when the backend is running.
 
 ```
 Local:      http://localhost:5000/api/docs
+Production: https://job-nest-production.up.railway.app/api/docs
 ```
 
 **To authenticate in Swagger:**
