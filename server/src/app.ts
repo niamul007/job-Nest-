@@ -21,7 +21,11 @@ const app = express();
 // CORS must be first — ensures Access-Control-Allow-Origin is present on every
 // response, including 429s from the rate limiter and OPTIONS preflight requests.
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'https://job-nest-7yitxf5sf-niamul-s-projects.vercel.app',
+    /\.vercel\.app$/  // allows all vercel preview deployments
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
