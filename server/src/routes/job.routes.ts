@@ -8,6 +8,20 @@ import { UserRole } from '../types';
 
 const router = Router();
 
+
+/**
+ * Job lifecycle:
+ * Employer creates (draft) → submits (pending) → Admin approves (active)
+ * Only active jobs appear in the public GET /api/jobs listing.
+ */
+
+/**
+ * POST /api/jobs
+ * Creates a new job listing with status set to 'draft'.
+ * Middleware chain: protect → authorize(Employer) → validate(schema) → controller
+ * @swagger ... (existing swagger comment stays here)
+ */
+
 /**
  * @swagger
  * /api/jobs:
@@ -88,6 +102,13 @@ router.post("/", protect, authorize(UserRole.Employer), validate(createJobSchema
  *                       items:
  *                         $ref: '#/components/schemas/JobResponse'
  */
+
+/**
+ * GET /api/jobs
+ * Public route — no authentication required.
+ * Returns all active jobs. Supports query filters: category, type, salary_min.
+ */
+
 router.get("/", jobController.getAll);
 
 /**
@@ -124,6 +145,13 @@ router.get("/", jobController.getAll);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * GET /api/jobs/pending
+ * Returns all jobs with status 'pending' — waiting for admin approval.
+ * NOTE: Must be defined before /:id to prevent Express matching
+ * "pending" as a job ID value.
  */
 router.get("/pending", protect, authorize(UserRole.Admin), jobController.getPending);
 
@@ -170,6 +198,12 @@ router.get("/pending", protect, authorize(UserRole.Admin), jobController.getPend
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * GET /api/jobs/company/:company_id
+ * Returns all jobs belonging to a specific company.
+ * NOTE: Must be defined before /:id — same reason as /pending above.
+ */
 router.get("/company/:company_id", protect, authorize(UserRole.Employer), jobController.getByCompany);
 
 /**
@@ -205,6 +239,14 @@ router.get("/company/:company_id", protect, authorize(UserRole.Employer), jobCon
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * GET /api/jobs/:id
+ * Public route — returns a single job by its UUID.
+ * NOTE: Defined after all specific routes so Express doesn't
+ * mistake route names like "pending" for a job ID.
+ */
+
 router.get("/:id", jobController.getOne);
 
 /**
@@ -259,7 +301,16 @@ router.get("/:id", jobController.getOne);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ * 
  */
+
+/**
+ * PUT /api/jobs/:id
+ * Replaces a job listing with new data.
+ * Only the employer who owns the job should be able to update it
+ * (ownership check handled in the controller).
+ */
+
 router.put("/:id", protect, authorize(UserRole.Employer), validate(createJobSchema), jobController.update);
 
 /**
@@ -303,6 +354,12 @@ router.put("/:id", protect, authorize(UserRole.Employer), validate(createJobSche
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * DELETE /api/jobs/:id
+ * Permanently deletes a job listing.
+ * Only employers can delete — ownership check in controller.
  */
 router.delete("/:id", protect, authorize(UserRole.Employer), jobController.remove);
 
@@ -353,6 +410,13 @@ router.delete("/:id", protect, authorize(UserRole.Employer), jobController.remov
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * PATCH /api/jobs/:id/submit
+ * Employer submits a draft job for admin review.
+ * Changes job status from 'draft' → 'pending'.
+ */
+
 router.patch("/:id/submit", protect, authorize(UserRole.Employer), jobController.submit);
 
 /**
@@ -402,6 +466,13 @@ router.patch("/:id/submit", protect, authorize(UserRole.Employer), jobController
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * PATCH /api/jobs/:id/approve
+ * Admin approves a pending job — makes it visible to the public.
+ * Changes job status from 'pending' → 'active'.
+ */
+
 router.patch("/:id/approve", protect, authorize(UserRole.Admin), jobController.approve);
 
 export default router;
