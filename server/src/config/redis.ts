@@ -1,3 +1,10 @@
+/**
+ * Redis client instance.
+ * Used for caching, rate limiting, and Bull queue management.
+ * Connects at startup and exits immediately if unreachable.
+ * Automatically reconnects with incremental backoff if connection drops mid-runtime.
+ */
+
 // This file creates a Redis client
 // Redis is an in-memory data store we use for:
 // 1. Caching job listings — so we don't hit the database every time
