@@ -1,3 +1,10 @@
+/**
+ * PostgreSQL connection pool.
+ * Uses a pool instead of individual connections for performance —
+ * connections are reused across requests instead of opened and closed each time.
+ * Validates the connection at startup and exits immediately if unreachable.
+ */
+
 // This file creates a PostgreSQL connection pool
 // A pool manages multiple database connections at once
 // instead of opening and closing a new connection every time

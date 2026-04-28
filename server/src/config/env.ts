@@ -1,3 +1,11 @@
+/**
+ * Centralised environment configuration.
+ * Reads and validates all required environment variables at startup.
+ * Throws immediately if any variable is missing — fail fast pattern.
+ * All other files should import from here, never from process.env directly.
+ */
+
+
 // This file reads all environment variables from .env
 // and validates them at startup. If anything is missing,
 // the app will throw an error immediately instead of
