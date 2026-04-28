@@ -282,13 +282,18 @@ const options: swaggerJsdoc.Options = {
 
   // Route files to scan for @swagger JSDoc comments.
   // Explicit list used instead of glob pattern to avoid issues on Windows.
-  apis: [
-    path.join(__dirname, "../routes/auth.routes.ts"),
-    path.join(__dirname, "../routes/job.routes.ts"),
-    path.join(__dirname, "../routes/company.routes.ts"),
-    path.join(__dirname, "../routes/application.routes.ts"),
-    path.join(__dirname, "../routes/user.routes.ts"),
-  ],
+apis: [
+  path.join(__dirname, '../routes/auth.routes.ts'),
+  path.join(__dirname, '../routes/auth.routes.js'),
+  path.join(__dirname, '../routes/job.routes.ts'),
+  path.join(__dirname, '../routes/job.routes.js'),
+  path.join(__dirname, '../routes/company.routes.ts'),
+  path.join(__dirname, '../routes/company.routes.js'),
+  path.join(__dirname, '../routes/application.routes.ts'),
+  path.join(__dirname, '../routes/application.routes.js'),
+  path.join(__dirname, '../routes/user.routes.ts'),
+  path.join(__dirname, '../routes/user.routes.js'),
+],
 };
 
 // Combine the definition above with @swagger comments from route files
