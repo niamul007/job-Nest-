@@ -1,6 +1,16 @@
 import * as companyModel from "../models/company.model";
 
-// CREATE — owner_id comes from logged in user
+/**
+ * Company service — business logic layer for company operations.
+ * Simpler than job service — no caching, no approval lifecycle.
+ * Main responsibility: ownership verification before mutations.
+ */
+
+/**
+ * Creates a new company owned by the requesting user.
+ * owner_id comes from req.user.id (set by protect middleware) — not from request body.
+ * No pre-checks needed — any authenticated employer can create a company.
+ */
 export async function createCompany(
   name: string,
   description: string,
@@ -14,19 +24,29 @@ export async function createCompany(
   return newCompany;
 }
 
-// GET ALL — no checks needed, public
+/**
+ * Returns all companies — public, no auth required.
+ * No caching needed — company list is small and changes infrequently.
+ */
 export async function getAllCompanies() {
   return await companyModel.findAllCompanies();
 }
 
-// GET ONE — just check if it exists
+/**
+ * Returns a single company by ID.
+ * Throws if not found — controller doesn't need to handle null checks.
+ */
 export async function getCompanyById(id: string) {
   const existing = await companyModel.findCompanyById(id);
   if (!existing) throw new Error("Company not found");
   return existing;
 }
 
-// UPDATE — find company, check ownership, then update
+/**
+ * Updates a company's content fields.
+ * Ownership check: only the employer who created the company can update it.
+ * Uses COALESCE in model — only provided fields are changed.
+ */
 export async function updateCompany(id: string, userId: string, data: any) {
   const existing = await companyModel.findCompanyById(id);
   if (!existing) throw new Error("Company not found");
@@ -34,7 +54,10 @@ export async function updateCompany(id: string, userId: string, data: any) {
   return await companyModel.updateCompany(id, data);
 }
 
-// DELETE — find company, check ownership, then delete
+/**
+ * Permanently deletes a company and all its associated jobs (via DB CASCADE).
+ * Ownership check: only the employer who created the company can delete it.
+ */
 export async function deleteCompany(id: string, userId: string) {
   const existing = await companyModel.findCompanyById(id);
   if (!existing) throw new Error("Company not found");
