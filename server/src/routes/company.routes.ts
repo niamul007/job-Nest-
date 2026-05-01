@@ -6,7 +6,14 @@ import { validate } from '../middlewares/validate.middleware';
 import { createCompanySchema } from '../validators/company.validator';
 
 const router = Router();
-
+/**
+ * Company routes.
+ * Public: GET all companies, GET one company — no auth needed.
+ * Protected: POST, PUT, DELETE — employer role required.
+ * Ownership verification (only owner can update/delete) happens in service layer.
+ *
+ * No ordering conflicts here — no named routes that could clash with /:id.
+ */
 /**
  * @swagger
  * /api/companies:
@@ -27,6 +34,12 @@ const router = Router();
  *                       type: array
  *                       items:
  *                         $ref: '#/components/schemas/CompanyResponse'
+ */
+
+/**
+ * GET /api/companies
+ * Public — returns all company profiles.
+ * No auth, no filters — company list is small enough to return all.
  */
 router.get('/', company.getAll);
 
@@ -69,6 +82,12 @@ router.get('/', company.getAll);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * POST /api/companies
+ * Creates a new company profile owned by the authenticated employer.
+ * owner_id comes from JWT in controller — never from request body.
+ */
 router.post('/', protect, authorize('employer'), validate(createCompanySchema), company.create);
 
 /**
@@ -104,6 +123,12 @@ router.post('/', protect, authorize('employer'), validate(createCompanySchema), 
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+/**
+ * GET /api/companies/:id
+ * Public — returns a single company by UUID.
+ * No auth needed — company profiles are public information.
+ */
+
 router.get('/:id', company.getOne);
 
 /**
@@ -159,6 +184,15 @@ router.get('/:id', company.getOne);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * PUT /api/companies/:id
+ * Updates a company profile.
+ * Service verifies requesting user owns the company before updating.
+ * Uses COALESCE — only provided fields are changed.
+ */
+
+
 router.put('/:id', protect, authorize('employer'), validate(createCompanySchema), company.update);
 
 /**
@@ -202,6 +236,13 @@ router.put('/:id', protect, authorize('employer'), validate(createCompanySchema)
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * DELETE /api/companies/:id
+ * Permanently deletes a company and cascades to all its jobs and applications.
+ * No body to validate — only needs :id from params.
+ * Service verifies requesting user owns the company before deleting.
  */
 router.delete('/:id', protect, authorize('employer'), company.remove);
 

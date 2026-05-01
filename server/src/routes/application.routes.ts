@@ -6,6 +6,16 @@ import { validate } from "../middlewares/validate.middleware";
 import { createApplicationSchema } from "../validators/application.validator";
 
 const router = Router();
+/**
+ * Application routes — all routes require authentication.
+ * Role separation:
+ *   Applicant → can apply and view own applications
+ *   Employer  → can view job applications and update status
+ *
+ * Route order matters:
+ *   /job/:id and /my must come before /:id/status
+ *   to prevent Express matching "job" or "my" as an application ID
+ */
 
 /**
  * @swagger
@@ -52,6 +62,15 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+
+/**
+ * POST /api/applications
+ * Applicant submits a job application.
+ * Validates body against createApplicationSchema before hitting controller.
+ * Service checks: job exists, job is active, not already applied.
+ */
+
 router.post("/", protect, authorize("applicant"), validate(createApplicationSchema), applicationController.apply);
 
 /**
@@ -97,6 +116,14 @@ router.post("/", protect, authorize("applicant"), validate(createApplicationSche
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * GET /api/applications/job/:id
+ * Employer views all applications for one of their job listings.
+ * :id = job ID (not application ID).
+ * Service verifies employer owns the company that posted the job.
+ */
+
 router.get("/job/:id", protect, authorize("employer"), applicationController.getByJob);
 
 /**
@@ -133,6 +160,14 @@ router.get("/job/:id", protect, authorize("employer"), applicationController.get
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * GET /api/applications/my
+ * Applicant views all their own submitted applications.
+ * No params needed — applicant_id comes from JWT via req.user.id.
+ * NOTE: Must be defined before /:id/status to prevent Express
+ * matching "my" as an application ID.
  */
 router.get("/my", protect, authorize("applicant"), applicationController.getByApplicant);
 
@@ -188,6 +223,15 @@ router.get("/my", protect, authorize("applicant"), applicationController.getByAp
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * PATCH /api/applications/:id/status
+ * Employer updates the status of a specific application.
+ * :id = application ID.
+ * Triggers email + WebSocket notification to the applicant.
+ * TODO: Add status validator to ensure value is one of:
+ *   pending | reviewed | accepted | rejected
  */
 router.patch("/:id/status", protect, authorize("employer"), applicationController.updateStatus);
 
