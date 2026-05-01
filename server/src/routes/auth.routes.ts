@@ -4,6 +4,12 @@ import { validate } from "../middlewares/validate.middleware";
 import { registerSchema, loginSchema } from "../validators/auth.validator";
 
 const router = Router();
+/**
+ * Auth routes — the only routes in the app with NO protect middleware.
+ * These endpoints create tokens — they can't require a token to access.
+ * Both routes validate request body before hitting the controller.
+ * Validation is critical here — these are fully public endpoints.
+ */
 
 /**
  * @swagger
@@ -36,6 +42,15 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * POST /api/auth/register
+ * Public — no authentication required.
+ * Validates body against registerSchema (name, email, password, role).
+ * Returns JWT token + safe user object on success.
+ * Service checks for duplicate email before creating account.
+ */
+
 router.post('/register', validate(registerSchema), controller.register);
 
 /**
@@ -68,6 +83,14 @@ router.post('/register', validate(registerSchema), controller.register);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * POST /api/auth/register
+ * Public — no authentication required.
+ * Validates body against registerSchema (name, email, password, role).
+ * Returns JWT token + safe user object on success.
+ * Service checks for duplicate email before creating account.
  */
 router.post('/login', validate(loginSchema), controller.login);
 
