@@ -16,6 +16,7 @@ const CompanyAvatar = ({ name, logo_url, size = 'md' }: CompanyAvatarProps) => {
   const [imgError, setImgError] = useState(false)
   const showImage = !!logo_url && !imgError
 
+
   return (
     <div className={`${sizeMap[size]} bg-blue-50 flex items-center justify-center font-medium text-blue-600 shrink-0 overflow-hidden`}>
       {showImage ? (
