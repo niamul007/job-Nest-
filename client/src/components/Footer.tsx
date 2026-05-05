@@ -1,7 +1,19 @@
 import { Link } from 'react-router-dom'
 
+/**
+ * Footer — static bottom section of the page.
+ * No state or props — purely presentational component.
+ * Used in DashboardLayout and public pages.
+ *
+ * Three sections:
+ *   Left   → JobNest logo
+ *   Center → internal navigation links (React Router Link)
+ *   Right  → social links + copyright
+ */
 const Footer = () => (
   <footer className="bg-white border-t border-gray-100 px-8 py-6 flex items-center justify-between">
+
+    {/* Left — Logo */}
     <div className="flex items-center gap-2">
       <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
@@ -9,6 +21,8 @@ const Footer = () => (
       <span className="text-base font-medium text-blue-600">JobNest</span>
     </div>
 
+    {/* Center — internal navigation links
+        Uses React Router Link — no full page reload */}
     <div className="flex gap-6">
       <Link to="/jobs"      className="text-sm text-gray-500 hover:text-gray-900 transition">Jobs</Link>
       <Link to="/companies" className="text-sm text-gray-500 hover:text-gray-900 transition">Companies</Link>
@@ -16,6 +30,8 @@ const Footer = () => (
       <Link to="/contact"   className="text-sm text-gray-500 hover:text-gray-900 transition">Contact</Link>
     </div>
 
+    {/* Right — social links + copyright
+        Uses <a> not Link — these would be external URLs */}
     <div className="flex items-center gap-4">
       <div className="flex gap-3">
         <a href="#" className="text-xs text-gray-400 hover:text-gray-600 transition">Twitter</a>
@@ -24,6 +40,7 @@ const Footer = () => (
       </div>
       <span className="text-xs text-gray-400">© 2026 JobNest. All rights reserved.</span>
     </div>
+
   </footer>
 )
 
