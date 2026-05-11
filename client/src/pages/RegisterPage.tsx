@@ -33,8 +33,8 @@ const RegisterPage = () => {
       } else {
         setError(response.message)
       }
-    } catch {
-      setError('Something went wrong. Please try again.')
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }

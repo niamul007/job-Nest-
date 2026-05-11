@@ -1,4 +1,4 @@
-CREATE TABLE companies (
+CREATE TABLE IF NOT EXISTS companies (
   -- UUID generated automatically — unguessable primary key
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 

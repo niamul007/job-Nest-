@@ -47,8 +47,12 @@ api.interceptors.response.use(
 
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');   // clear expired token
-      window.location.href = '/login';    // force redirect to login
+      const url: string = error.config?.url || '';
+      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
+      if (!isAuthEndpoint) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error); // rethrow — component catch blocks still run
   }

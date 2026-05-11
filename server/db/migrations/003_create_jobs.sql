@@ -1,4 +1,4 @@
-CREATE TABLE jobs (
+CREATE TABLE IF NOT EXISTS jobs (
   -- UUID generated automatically
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
