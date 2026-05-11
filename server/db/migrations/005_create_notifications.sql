@@ -1,4 +1,4 @@
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
   -- UUID generated automatically
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 

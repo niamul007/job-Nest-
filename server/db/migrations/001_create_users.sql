@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   -- UUID generated automatically by PostgreSQL — more secure than auto-increment
   -- UUIDs are unguessable unlike sequential IDs (1, 2, 3...)
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -1,4 +1,4 @@
-CREATE TABLE applications (
+CREATE TABLE IF NOT EXISTS applications (
   -- UUID generated automatically
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 

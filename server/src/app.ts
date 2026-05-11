@@ -14,18 +14,17 @@ import userRoutes from './routes/user.routes';
 
 const app = express();
 
-/**
- * CORS must be first — ensures Access-Control-Allow-Origin is present on every
- * response, including 429s from the rate limiter and OPTIONS preflight requests.
- * Allows requests from local dev, production, and all Vercel preview deployments.
- */
+const corsOrigins: (string | RegExp)[] = [
+  'http://localhost:5173',
+  /\.vercel\.app$/,
+];
+if (process.env.CLIENT_URL) {
+  corsOrigins.push(process.env.CLIENT_URL);
+}
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://job-nest-7yitxf5sf-niamul-s-projects.vercel.app',
-    /\.vercel\.app$/ // allows all Vercel preview deployments
-  ],
-  credentials: true,        // allows cookies and Authorization headers
+  origin: corsOrigins,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -68,7 +67,7 @@ app.use('/api/applications', applicationRoutes);
 app.use('/api/users', userRoutes);
 
 // Health check endpoint — used by Railway and monitoring tools to verify the server is alive
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
