@@ -260,9 +260,12 @@ Documented endpoints:
 
 ## 📸 Screenshots
 
-> Screenshots coming soon.
 
-<!-- Add screenshots here once the UI is finalized -->
+<img width="1231" height="2766" alt="client-05-13-2026_06_10_PM (2)" src="https://github.com/user-attachments/assets/b128d064-dc9c-418d-861e-b326edf075f6" />
+<img width="1238" height="958" alt="client-05-13-2026_06_11_PM" src="https://github.com/user-attachments/assets/3992cbc5-12c6-42bf-9c3b-db8f1cf7472a" />
+<img width="1238" height="958" alt="client-05-13-2026_06_10_PM (1)" src="https://github.com/user-attachments/assets/6d2d6cb9-e40f-4969-a030-bdd40766461f" />
+<img width="1231" height="1213" alt="client-05-13-2026_06_10_PM" src="https://github.com/user-attachments/assets/abb92ca7-9132-4e69-ab7d-be6f1145eab2" />
+
 
 ---
 
