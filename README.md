@@ -10,7 +10,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
 **Live demo:** [job-nest-61q5muuou-niamul-s-projects.vercel.app](https://job-nest-61q5muuou-niamul-s-projects.vercel.app/)  
-**API (Railway):** [job-nest-production.up.railway.app](https://job-nest-production.up.railway.app/)  
+**API (Render):** [job-nest-pwkn.onrender.com](https://job-nest-pwkn.onrender.com)
 **API docs:** [job-nest-production.up.railway.app/api/docs](https://job-nest-production.up.railway.app/api/docs) · **Repo:** [github.com/niamul007/job-Nest-](https://github.com/niamul007/job-Nest-)
 
 ---
