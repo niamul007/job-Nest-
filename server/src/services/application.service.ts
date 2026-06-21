@@ -47,10 +47,12 @@ export async function applyToJob(
   }
 
   // Queue confirmation email — no await, runs in background so user isn't kept waiting
-  emailQueue.add({
+emailQueue.add({
     type: 'application_received',
     email: applicant_email,
     jobTitle: job.title,
+  }).catch((err) => {
+    console.error("Failed to enqueue application email:", err);
   });
 
   return application;
