@@ -23,6 +23,6 @@ CREATE TABLE IF NOT EXISTS applications (
    */
   status VARCHAR CHECK (status IN ('pending', 'reviewed', 'accepted', 'rejected')) NOT NULL DEFAULT 'pending',
 
-  created_at TIMESTAMP DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT NOW(),
   UNIQUE (job_id, applicant_id)
 );
