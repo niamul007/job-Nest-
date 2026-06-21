@@ -16,13 +16,6 @@ const router = Router();
  */
 
 /**
- * POST /api/jobs
- * Creates a new job listing with status set to 'draft'.
- * Middleware chain: protect → authorize(Employer) → validate(schema) → controller
- * @swagger ... (existing swagger comment stays here)
- */
-
-/**
  * @swagger
  * /api/jobs:
  *   post:
@@ -60,12 +53,6 @@ const router = Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- */
-router.post("/", protect, authorize(UserRole.Employer), validate(createJobSchema), jobController.create);
-
-/**
- * @swagger
- * /api/jobs:
  *   get:
  *     summary: Get all active jobs
  *     tags: [Jobs]
@@ -104,11 +91,17 @@ router.post("/", protect, authorize(UserRole.Employer), validate(createJobSchema
  */
 
 /**
+ * POST /api/jobs
+ * Creates a new job listing with status set to 'draft'.
+ * Middleware chain: protect → authorize(Employer) → validate(schema) → controller
+ */
+router.post("/", protect, authorize(UserRole.Employer), validate(createJobSchema), jobController.create);
+
+/**
  * GET /api/jobs
  * Public route — no authentication required.
  * Returns all active jobs. Supports query filters: category, type, salary_min.
  */
-
 router.get("/", jobController.getAll);
 
 /**
@@ -238,20 +231,6 @@ router.get("/company/:company_id", protect, authorize(UserRole.Employer), jobCon
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- */
-
-/**
- * GET /api/jobs/:id
- * Public route — returns a single job by its UUID.
- * NOTE: Defined after all specific routes so Express doesn't
- * mistake route names like "pending" for a job ID.
- */
-
-router.get("/:id", jobController.getOne);
-
-/**
- * @swagger
- * /api/jobs/{id}:
  *   put:
  *     summary: Update a job listing
  *     tags: [Jobs]
@@ -301,21 +280,6 @@ router.get("/:id", jobController.getOne);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- * 
- */
-
-/**
- * PUT /api/jobs/:id
- * Replaces a job listing with new data.
- * Only the employer who owns the job should be able to update it
- * (ownership check handled in the controller).
- */
-
-router.put("/:id", protect, authorize(UserRole.Employer), validate(createJobSchema), jobController.update);
-
-/**
- * @swagger
- * /api/jobs/{id}:
  *   delete:
  *     summary: Delete a job listing
  *     tags: [Jobs]
@@ -355,6 +319,22 @@ router.put("/:id", protect, authorize(UserRole.Employer), validate(createJobSche
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+/**
+ * GET /api/jobs/:id
+ * Public route — returns a single job by its UUID.
+ * NOTE: Defined after all specific routes so Express doesn't
+ * mistake route names like "pending" for a job ID.
+ */
+router.get("/:id", jobController.getOne);
+
+/**
+ * PUT /api/jobs/:id
+ * Replaces a job listing with new data.
+ * Only the employer who owns the job should be able to update it
+ * (ownership check handled in the controller).
+ */
+router.put("/:id", protect, authorize(UserRole.Employer), validate(createJobSchema), jobController.update);
 
 /**
  * DELETE /api/jobs/:id
@@ -416,7 +396,6 @@ router.delete("/:id", protect, authorize(UserRole.Employer), jobController.remov
  * Employer submits a draft job for admin review.
  * Changes job status from 'draft' → 'pending'.
  */
-
 router.patch("/:id/submit", protect, authorize(UserRole.Employer), jobController.submit);
 
 /**
@@ -472,7 +451,6 @@ router.patch("/:id/submit", protect, authorize(UserRole.Employer), jobController
  * Admin approves a pending job — makes it visible to the public.
  * Changes job status from 'pending' → 'active'.
  */
-
 router.patch("/:id/approve", protect, authorize(UserRole.Admin), jobController.approve);
 
 export default router;
