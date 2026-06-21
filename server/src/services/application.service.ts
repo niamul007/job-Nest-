@@ -118,12 +118,14 @@ export async function updateApplicationStatus(
   // Notify the applicant via email (fire and forget — no await)
   const applicant = await userModel.findUserById(application.applicant_id);
   if (applicant) {
-    emailQueue.add({
-      type: 'status_update',
-      email: applicant.email,
-      jobTitle: job.title,
-      status,
-    });
+emailQueue.add({
+    type: 'status_update',
+    email: applicant.email,
+    jobTitle: job.title,
+    status,
+  }).catch((err) => {
+    console.error("Failed to enqueue status update email:", err);
+  });
   }
 
   // Notify the applicant via WebSocket (real-time, instant)
