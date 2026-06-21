@@ -35,7 +35,16 @@ export async function applyToJob(
   if (existingApplication.length > 0) throw new Error("you have already applied to this job");
 
   // Create the application
-  const application = await applicationModel.createApplication(job_id, applicant_id, cover_letter);
+  let application;
+  try {
+    application = await applicationModel.createApplication(job_id, applicant_id, cover_letter);
+  } catch (error: any) {
+    // 23505 = unique_violation (race condition: two requests passed the check above simultaneously)
+    if (error.code === "23505") {
+      throw new Error("you have already applied to this job");
+    }
+    throw error; // re-throw anything else (actual DB errors, connection issues, etc.)
+  }
 
   // Queue confirmation email — no await, runs in background so user isn't kept waiting
   emailQueue.add({
