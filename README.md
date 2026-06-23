@@ -2,7 +2,7 @@
 
 A production-grade **Job Board REST API** built with Node.js, TypeScript, and PostgreSQL. Connects employers, applicants, and admins through a clean, layered backend architecture with real-time notifications, background job processing, and role-based access control.
 
-**Live:** [Backend API](https://job-nest-pwkn.onrender.com) · [API Docs (Swagger)](https://job-nest-pwkn.onrender.com/api/docs) · [Frontend](https://job-nest-teal.vercel.app)
+**Live:** [Backend API](https://job-nest-pwkn.onrender.com) · [API Docs (Swagger)](https://job-nest-pwkn.onrender.com/api/docs) · [Frontend]([https://job-nest-teal.vercel.app](https://job-nest-60dindjjv-niamul-s-projects.vercel.app/))
 
 > Free-tier hosting — first request may take ~30s to wake the server.
 
