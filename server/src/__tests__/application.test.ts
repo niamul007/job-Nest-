@@ -50,9 +50,15 @@ describe("Application routes", () => {
       });
     jobId = jobResponse.body.data.id;
 
-    await request(app)
+    const submitResponse = await request(app)
+      .patch(`/api/jobs/${jobId}/submit`)
+      .set("Authorization", `Bearer ${employerToken}`);
+    expect(submitResponse.status).toBe(200);
+
+    const approveResponse = await request(app)
       .patch(`/api/jobs/${jobId}/approve`)
       .set("Authorization", `Bearer ${adminToken}`);
+    expect(approveResponse.status).toBe(200);
   });
 
   it("should applicant apply for a job", async () => {
