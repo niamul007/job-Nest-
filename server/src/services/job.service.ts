@@ -163,6 +163,7 @@ export async function submitJobForReview(id: string, userId: string) {
   const company = await companyModel.findCompanyById(existing.company_id);
   if (!company) throw new Error("Company not found");
   if (company.owner_id !== userId) throw new Error("Not authorized");
+  if (existing.status !== JobStatus.Draft) throw new Error("Only draft jobs can be submitted for review");
 
   const updated = await jobModel.updateJobStatus(id, JobStatus.Pending);
   await clearJobCache(id);
@@ -178,6 +179,7 @@ export async function submitJobForReview(id: string, userId: string) {
 export async function approveJob(id: string) {
   const existing = await jobModel.findJobById(id);
   if (!existing) throw new Error("Job isn't found");
+  if (existing.status !== JobStatus.Pending) throw new Error("Only pending jobs can be approved");
 
   const updated = await jobModel.updateJobStatus(id, JobStatus.Active);
   await clearJobCache(id);
