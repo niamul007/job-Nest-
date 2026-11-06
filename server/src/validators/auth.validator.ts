@@ -36,8 +36,8 @@ export const registerSchema = z.object({
     ),
 
   // Role: only valid enum values accepted
-  role: z.enum(["applicant", "employer", "admin"], {
-    message: "Role must be 'applicant', 'employer', or 'admin'"
+  role: z.enum(["applicant", "employer"], {
+    message: "Role must be 'applicant' or 'employer'"
   }),
 });
 
