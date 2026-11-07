@@ -38,8 +38,10 @@ beforeAll(async () => {
         description: "A job for testing",
         location: "Test City",
         type: "full-time",
+        category: "Engineer",
         company_id: companyId,
       });
+    expect(response.status).toBe(201);
     jobId = response.body.data.id;
     console.log("jobId saved:", jobId);
 
