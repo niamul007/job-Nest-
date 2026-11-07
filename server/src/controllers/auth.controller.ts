@@ -42,7 +42,7 @@ export const login = async (req: Request, res: Response) => {
     const result = await auth.login(email, password);
     res.status(200).json(ApiResponse.success("User login successfully", result));
   } catch (err: any) {
-    if (err.message === 'User not found' || err.message === 'Invalid credentials') {
+    if (err.message === 'Invalid credentials') {
       res.status(401).json(ApiResponse.error(err.message));
       return;
     }

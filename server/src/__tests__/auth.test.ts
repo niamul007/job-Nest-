@@ -36,6 +36,19 @@ describe("Auth Routes", () => {
     expect(response.body.data.token).toBeDefined();
   });
 
+  it("should fail login with an unknown email", async () => {
+    const response = await request(app)
+      .post("/api/auth/login")
+      .send({
+        email: `nobody${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`,
+        password: "Whatever123!",
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Invalid credentials");
+  });
+
   it("should fail login with wrong password", async () => {
     const email = `wrongpw${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
     const password = `Aa1!${Math.random().toString(36).slice(2)}${Date.now()}`;
