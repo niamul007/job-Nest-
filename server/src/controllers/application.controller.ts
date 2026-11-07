@@ -1,6 +1,7 @@
 import * as applicationService from "../services/application.service";
 import { Request, Response } from "express";
 import ApiResponse from "../utils/ApiResponse";
+import { sendError } from "../utils/httpError";
 
 /**
  * Application controller — HTTP layer between routes and application service.
@@ -24,7 +25,7 @@ export const apply = async (req: Request, res: Response): Promise<void> => {
     // ✅ should be 201 — a new application resource was created
     res.status(201).json(ApiResponse.success("Job Applied", result));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -41,7 +42,7 @@ export const getByJob = async (req: Request, res: Response): Promise<void> => {
     const result = await applicationService.getApplicationByJob(job_id, userId);
     res.status(200).json(ApiResponse.success("Applications fetched by job", result));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -58,7 +59,7 @@ export const getByApplicant = async (req: Request, res: Response): Promise<void>
     const result = await applicationService.getApplicationsByApplicant(applicant_id);
     res.status(200).json(ApiResponse.success("Applications fetched", result));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -79,6 +80,6 @@ export const updateStatus = async (req: Request, res: Response): Promise<void> =
     const result = await applicationService.updateApplicationStatus(id, status, userId);
     res.status(200).json(ApiResponse.success("Status updated successfully", result));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };

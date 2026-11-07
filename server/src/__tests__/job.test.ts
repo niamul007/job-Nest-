@@ -124,13 +124,13 @@ it("should approve job as admin", async () => {
     const response = await request(app)
       .get(`/api/jobs/company/${companyId}`)
       .set("Authorization", `Bearer ${secondEmployerToken}`);
-    expect(response.status).toBeGreaterThanOrEqual(400);
+    expect(response.status).toBe(403);
     expect(response.body.success).toBe(false);
     expect(response.body.message).toBe("Not authorized");
   });
 
   it("should hide a pending job from the public", async () => {
     const getResponse = await request(app).get(`/api/jobs/${jobId}`);
-    expect(getResponse.status).toBe(400);
+    expect(getResponse.status).toBe(404);
   });
 });

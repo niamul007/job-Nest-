@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import * as jobServices from "../services/job.service";
 import * as jobService from "../services/job.service";
 import ApiResponse from "../utils/ApiResponse";
+import { sendError } from "../utils/httpError";
 
 /**
  * Job controller — HTTP layer between routes and the job service.
@@ -31,7 +32,7 @@ export const create = async (req: Request, res: Response) => {
     );
     res.status(201).json(ApiResponse.success("Job created successfully", newJob));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -59,7 +60,7 @@ export const getAll = async (req: Request, res: Response) => {
     const jobs = await jobServices.getAllJobs(filters);
     res.status(200).json(ApiResponse.success("Response successful", jobs));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error("job not found"));
+    sendError(res, error, "job not found");
   }
 };
 
@@ -75,7 +76,7 @@ export const getOne = async (req: Request, res: Response) => {
     const job = await jobServices.getJobById(id);
     res.status(200).json(ApiResponse.success("Job found by id successfully", job));
   } catch (error) {
-    res.status(400).json(ApiResponse.error("job didn't find by id"));
+    sendError(res, error, "job didn't find by id");
   }
 };
 
@@ -95,7 +96,7 @@ export const update = async (req: Request, res: Response) => {
     });
     res.status(200).json(ApiResponse.success("Job updated successfully", updated));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -111,7 +112,7 @@ export const remove = async (req: Request, res: Response) => {
     await jobServices.deleteJob(id, userId);
     res.status(200).json(ApiResponse.success("Job removed", null));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -128,7 +129,7 @@ export const submit = async (req: Request, res: Response) => {
     const submitted = await jobServices.submitJobForReview(id, userId);
     res.status(200).json(ApiResponse.success("Job submitted successfully", submitted));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -144,7 +145,7 @@ export const approve = async (req: Request, res: Response) => {
     const approved = await jobServices.approveJob(id);
     res.status(200).json(ApiResponse.success("Job approved", approved));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
