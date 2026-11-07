@@ -65,7 +65,7 @@ export async function register(
 export async function login(email: string, password: string) {
   // Get user with password hash — only place this is needed
   const user = await findByEmailWithPassword(email);
-  if (!user) throw new Error("User not found");
+  if (!user) throw new Error("Invalid credentials");
 
   // Compare submitted password against stored hash
   const isMatch = await bcrypt.compare(password, user.password);
