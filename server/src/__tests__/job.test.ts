@@ -94,4 +94,22 @@ it("should approve job as admin", async () => {
     expect(response.status).toBe(403);
     expect(response.body.success).toBe(false);
   });
+
+  it("should send an active job back to pending when it is edited", async () => {
+    const updateResponse = await request(app)
+      .put(`/api/jobs/${jobId}`)
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({
+        title: "Edited Title",
+        description: "Edited description for testing",
+        location: "Test City",
+        type: "full-time",
+        category: "Engineer",
+        company_id: companyId,
+      });
+    expect(updateResponse.status).toBe(200);
+
+    const getResponse = await request(app).get(`/api/jobs/${jobId}`);
+    expect(getResponse.body.data.status).toBe("pending");
+  });
 });
