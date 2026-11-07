@@ -3,6 +3,24 @@ import request from "supertest";
 import app from "../../app";
 import { pool } from "../../config/db";
 
+/** Registers one extra employer (a different owner) and returns its token. */
+export async function createSecondEmployer() {
+  const runId = `${Date.now()}${randomBytes(4).toString("hex")}`;
+  const password = `Aa1!${randomBytes(12).toString("hex")}`;
+  const email = `employer2${runId}@example.com`;
+
+  await request(app).post("/api/auth/register").send({
+    name: "Second Employer",
+    email,
+    password,
+    role: "employer",
+  });
+  const res = await request(app)
+    .post("/api/auth/login")
+    .send({ email, password });
+  return { secondEmployerToken: res.body.data.token as string };
+}
+
 export async function createTestUsers() {
   const runId = `${Date.now()}${randomBytes(4).toString("hex")}`;
   const password = `Aa1!${randomBytes(12).toString("hex")}`;
