@@ -201,7 +201,10 @@ export async function approveJob(id: string) {
  * Returns all jobs belonging to a specific company.
  * No caching — employer-specific data changes frequently.
  */
-export async function getJobsByCompany(company_id: string) {
+export async function getJobsByCompany(company_id: string, userId: string) {
+  const company = await companyModel.findCompanyById(company_id);
+  if (!company) throw new Error("Company not found");
+  if (company.owner_id !== userId) throw new Error("Not authorized");
   return await jobModel.findJobsByCompany(company_id);
 }
 

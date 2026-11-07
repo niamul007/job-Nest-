@@ -156,7 +156,8 @@ export const approve = async (req: Request, res: Response) => {
 export const getByCompany = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { company_id } = req.params as { company_id: string };
-    const jobs = await jobService.getJobsByCompany(company_id);
+    const userId = req?.user?.id as string;
+    const jobs = await jobService.getJobsByCompany(company_id, userId);
     res.status(200).json(ApiResponse.success("Jobs fetched", jobs));
   } catch (error) {
     next(error);

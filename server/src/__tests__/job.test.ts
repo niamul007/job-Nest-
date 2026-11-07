@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../app";
-import { createTestUsers } from "./helpers/testUsers";
+import { createTestUsers, createSecondEmployer } from "./helpers/testUsers";
 
 describe("Job Routes", () => {
   let employerToken: string;
@@ -109,6 +109,24 @@ it("should approve job as admin", async () => {
       });
     expect(updateResponse.status).toBe(200);
     expect(updateResponse.body.data.status).toBe("pending");
+  });
+
+  it("should let the company owner list the company's jobs", async () => {
+    const response = await request(app)
+      .get(`/api/jobs/company/${companyId}`)
+      .set("Authorization", `Bearer ${employerToken}`);
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body.data)).toBe(true);
+  });
+
+  it("should not let another employer list the company's jobs", async () => {
+    const { secondEmployerToken } = await createSecondEmployer();
+    const response = await request(app)
+      .get(`/api/jobs/company/${companyId}`)
+      .set("Authorization", `Bearer ${secondEmployerToken}`);
+    expect(response.status).toBeGreaterThanOrEqual(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Not authorized");
   });
 
   it("should hide a pending job from the public", async () => {
