@@ -129,6 +129,14 @@ export async function updateJob(id: string, userId: string, data: UpdateJobData)
   if (company.owner_id !== userId) throw new Error("Not authorized");
 
   const updated = await jobModel.updateJob(id, data);
+
+  // Editing an active job sends it back to pending for re-approval
+  if (existing.status === JobStatus.Active) {
+    const pending = await jobModel.updateJobStatus(id, JobStatus.Pending);
+    await clearJobCache(id);
+    return pending;
+  }
+
   await clearJobCache(id);
   return updated;
 }
