@@ -41,6 +41,7 @@ async function runMigrations() {
 
   } catch (err) {
     console.error('❌ Error running migrations:', err);
+    process.exitCode = 1;
 
   } finally {
     // Always close the pool — prevents Node.js process from hanging
