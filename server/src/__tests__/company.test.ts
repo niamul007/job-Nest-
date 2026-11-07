@@ -65,6 +65,19 @@ describe("Company Routes", () => {
     expect(response.body.message).not.toMatch(/uuid|syntax/i);
   });
 
+  it("should reject a website that is not http or https", async () => {
+    const response = await request(app)
+      .post("/api/companies")
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({
+        name: "Bad Website Company",
+        description: "A company with a bad website",
+        website: "javascript:alert(1)",
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
   it("should update a company", async () => {
     // token is already available here too ✅
     const updatedData = {

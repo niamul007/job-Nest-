@@ -28,5 +28,6 @@ export const createCompanySchema = z.object({
   // "acme.com" fails — must include protocol: "https://acme.com"
   website: z.string()
     .url("Invalid URL format")
+    .refine((value) => /^https?:\/\//i.test(value), "Website must start with http:// or https://")
     .optional(),
 });
