@@ -1,7 +1,12 @@
 import request from "supertest";
 import app from "../app";
+import { trackEmail, cleanupAndClose } from "./helpers/testUsers";
 
 describe("Auth Routes", () => {
+  afterAll(async () => {
+    await cleanupAndClose();
+  });
+
   it("should register a new user", async () => {
     const userData = {
       name: "Test User",
@@ -10,6 +15,7 @@ describe("Auth Routes", () => {
       role: "applicant",
     };
 
+    trackEmail(userData.email);
     const response = await request(app)
       .post("/api/auth/register")
       .send(userData);
@@ -22,6 +28,7 @@ describe("Auth Routes", () => {
   it("should login an existing user", async () => {
     const email = `loginuser${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
     const password = `Aa1!${Math.random().toString(36).slice(2)}${Date.now()}`;
+    trackEmail(email);
 
     await request(app)
       .post("/api/auth/register")
@@ -52,6 +59,7 @@ describe("Auth Routes", () => {
   it("should fail login with wrong password", async () => {
     const email = `wrongpw${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
     const password = `Aa1!${Math.random().toString(36).slice(2)}${Date.now()}`;
+    trackEmail(email);
 
     await request(app)
       .post("/api/auth/register")

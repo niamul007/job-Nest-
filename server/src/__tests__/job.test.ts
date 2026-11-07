@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../app";
-import { createTestUsers, createSecondEmployer } from "./helpers/testUsers";
+import { createTestUsers, createSecondEmployer, tracked, cleanupAndClose } from "./helpers/testUsers";
 
 describe("Job Routes", () => {
   let employerToken: string;
@@ -25,10 +25,15 @@ beforeAll(async () => {
     });
   console.log("company response:", JSON.stringify(companyResponse.body));
   companyId = companyResponse.body.data.id;
+  tracked.companyIds.push(companyId);
   console.log("companyId:", companyId);
 });
 
   // ✅ tests are OUT here, not inside beforeAll
+  afterAll(async () => {
+    await cleanupAndClose();
+  });
+
   it("should create a job", async () => {
     const response = await request(app)
       .post("/api/jobs")
@@ -43,6 +48,7 @@ beforeAll(async () => {
       });
     expect(response.status).toBe(201);
     jobId = response.body.data.id;
+    tracked.jobIds.push(jobId);
     console.log("jobId saved:", jobId);
 
     expect(response.status).toBe(201);
