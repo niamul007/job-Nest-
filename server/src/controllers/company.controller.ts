@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as companyServices from "../services/company.service";
 import ApiResponse from "../utils/ApiResponse";
+import { sendError } from "../utils/httpError";
 
 /**
  * Company controller — HTTP layer between routes and company service.
@@ -25,7 +26,7 @@ export const create = async (req: Request, res: Response) => {
     );
     res.status(201).json(ApiResponse.success("Company created successfully", newCompany));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -38,7 +39,7 @@ export const getAll = async (req: Request, res: Response) => {
     const companies = await companyServices.getAllCompanies();
     res.status(200).json(ApiResponse.success("Companies fetched successfully", companies));
   } catch (error) {
-    res.status(400).json(ApiResponse.error("Companies not found"));
+    sendError(res, error, "Companies not found");
   }
 };
 
@@ -54,7 +55,7 @@ export const getOne = async (req: Request, res: Response) => {
     const company = await companyServices.getCompanyById(id);
     res.status(200).json(ApiResponse.success("Company found", company));
   } catch (error) {
-    res.status(400).json(ApiResponse.error("Company not found"));
+    sendError(res, error, "Company not found");
   }
 };
 
@@ -77,7 +78,7 @@ export const update = async (req: Request, res: Response) => {
     // ✅ fixed: was incorrectly saying "Company deleted" and returning null
     res.status(200).json(ApiResponse.success("Company updated successfully", updated));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };
 
@@ -94,6 +95,6 @@ export const remove = async (req: Request, res: Response) => {
     // ✅ fixed: was 203, standard success is 200 for delete confirmation
     res.status(200).json(ApiResponse.success("Company deleted successfully", null));
   } catch (error: any) {
-    res.status(400).json(ApiResponse.error(error.message));
+    sendError(res, error);
   }
 };

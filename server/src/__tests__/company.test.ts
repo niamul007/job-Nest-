@@ -51,6 +51,20 @@ describe("Company Routes", () => {
     expect(response.body.data.id).toBe(companyId);
   });
 
+  it("should return 404 for a company that does not exist", async () => {
+    const response = await request(app).get(
+      "/api/companies/00000000-0000-4000-8000-000000000000",
+    );
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+  });
+
+  it("should return 400 for a malformed company id without leaking database text", async () => {
+    const response = await request(app).get("/api/companies/not-a-uuid");
+    expect(response.status).toBe(400);
+    expect(response.body.message).not.toMatch(/uuid|syntax/i);
+  });
+
   it("should update a company", async () => {
     // token is already available here too ✅
     const updatedData = {
