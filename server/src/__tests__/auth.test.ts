@@ -20,10 +20,14 @@ describe("Auth Routes", () => {
   });
 
   it("should login an existing user", async () => {
-    const loginData = {
-      email: "testuser@example.com",
-      password: "Test1234!",
-    };
+    const email = `loginuser${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
+    const password = `Aa1!${Math.random().toString(36).slice(2)}${Date.now()}`;
+
+    await request(app)
+      .post("/api/auth/register")
+      .send({ name: "Login User", email, password, role: "applicant" });
+
+    const loginData = { email, password };
 
     const response = await request(app).post("/api/auth/login").send(loginData);
 
@@ -33,14 +37,18 @@ describe("Auth Routes", () => {
   });
 
   it("should fail login with wrong password", async () => {
-    const loginData = {
-      email: "testuser@example.com",
-      password: "wrongpassword",
-    };
+    const email = `wrongpw${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
+    const password = `Aa1!${Math.random().toString(36).slice(2)}${Date.now()}`;
+
+    await request(app)
+      .post("/api/auth/register")
+      .send({ name: "Wrong Pw User", email, password, role: "applicant" });
+
+    const loginData = { email, password: `${password}-wrong` };
 
     const response = await request(app).post("/api/auth/login").send(loginData);
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(401);
     expect(response.body.success).toBe(false);
   });
 });

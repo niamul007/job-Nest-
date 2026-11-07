@@ -1,24 +1,19 @@
 import request from "supertest";
 import app from "../app";
+import { createTestUsers } from "./helpers/testUsers";
 
 describe("Job Routes", () => {
   let employerToken: string;
   let companyId: string;
   let adminToken: string;
+  let applicantToken: string;
   let jobId: string;
 
 beforeAll(async () => {
-  const employerResponse = await request(app)
-    .post("/api/auth/login")
-    .send({ email: "testemployer@gmail.com", password: "Test1234!" });
-  employerToken = employerResponse.body.data.token;
-  console.log("employerToken:", employerToken);
-
-  const adminResponse = await request(app)
-    .post("/api/auth/login")
-    .send({ email: "admin@jobnest.com", password: "Admin1234!" });
-  adminToken = adminResponse.body.data.token;
-  console.log("adminToken:", adminToken);
+  const tokens = await createTestUsers();
+  employerToken = tokens.employerToken;
+  adminToken = tokens.adminToken;
+  applicantToken = tokens.applicantToken;
 
   const companyResponse = await request(app)
     .post("/api/companies")
@@ -62,7 +57,6 @@ beforeAll(async () => {
   });
 
 it("should approve job as admin", async () => {
-  console.log("adminToken:", adminToken);
   console.log("jobId:", jobId);
 
   await request(app)
@@ -88,11 +82,6 @@ it("should approve job as admin", async () => {
   });
 
   it("shouldn't create job as applicant", async () => {
-    const applicantResponse = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "testapplicant@gmail.com", password: "Test1234!" });
-    const applicantToken = applicantResponse.body.data.token;
-
     const response = await request(app)
       .post("/api/jobs")
       .set("Authorization", `Bearer ${applicantToken}`)

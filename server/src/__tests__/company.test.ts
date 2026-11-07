@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../app";
+import { createTestUsers } from "./helpers/testUsers";
 
 describe("Company Routes", () => {
   let employerToken: string; // shared across all tests
@@ -7,11 +8,8 @@ describe("Company Routes", () => {
 
   beforeAll(async () => {
     // login once, reuse token in all tests below
-    const response = await request(app).post("/api/auth/login").send({
-      email: "testemployer@gmail.com",
-      password: "Test1234!",
-    });
-    employerToken = response.body.data.token;
+    const tokens = await createTestUsers();
+    employerToken = tokens.employerToken;
   });
 
   it("should create a company", async () => {

@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../app";
+import { createTestUsers } from "./helpers/testUsers";
 
 describe("Application routes", () => {
   let employerToken: string;
@@ -10,20 +11,10 @@ describe("Application routes", () => {
   let applicationId: string;
 
   beforeAll(async () => {
-    const adminResponse = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "admin@jobnest.com", password: "Admin1234!" });
-    adminToken = adminResponse.body.data.token;
-
-    const employerResponse = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "testemployer@gmail.com", password: "Test1234!" });
-    employerToken = employerResponse.body.data.token;
-
-    const applicantResponse = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "applicant123@gmail.com", password: "Test12345!" });
-    applicantToken = applicantResponse.body.data.token;
+    const tokens = await createTestUsers();
+    adminToken = tokens.adminToken;
+    employerToken = tokens.employerToken;
+    applicantToken = tokens.applicantToken;
 
     const companyResponse = await request(app)
       .post("/api/companies")
