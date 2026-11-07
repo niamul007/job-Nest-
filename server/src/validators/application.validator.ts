@@ -15,3 +15,9 @@ export const createApplicationSchema = z.object({
     .min(10, "Cover letter must be at least 10 characters long")
     .max(1000, "Cover letter must be less than 1000 characters long"),
 });
+
+export const updateApplicationStatusSchema = z.object({
+  status: z.enum(["pending", "reviewed", "accepted", "rejected"], {
+    message: "Status must be 'pending', 'reviewed', 'accepted', or 'rejected'",
+  }),
+});
