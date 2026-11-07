@@ -104,11 +104,14 @@ export async function getJobById(id: string) {
   const cached = await redisClient.get(cacheKey);
   if (cached) {
     console.log('✅ Returning from cache');
-    return JSON.parse(cached);
+    const cachedJob = JSON.parse(cached);
+    if (cachedJob.status !== JobStatus.Active) throw new Error("Job isn't found");
+    return cachedJob;
   }
 
   const existing = await jobModel.findJobById(id);
   if (!existing) throw new Error("Job isn't found");
+  if (existing.status !== JobStatus.Active) throw new Error("Job isn't found");
 
   await redisClient.setEx(cacheKey, 600, JSON.stringify(existing)); // cache for 10 minutes
   return existing;
