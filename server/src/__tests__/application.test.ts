@@ -87,6 +87,16 @@ describe("Application routes", () => {
     expect(response.body.success).toBe(true);
   });
 
+  it("should reject an invalid application status", async () => {
+    const response = await request(app)
+      .patch(`/api/applications/${applicationId}/status`)
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({ status: "hired-maybe" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
   it("should not allow applicant to apply for the same job twice", async () => {
     const response = await request(app)
       .post("/api/applications")

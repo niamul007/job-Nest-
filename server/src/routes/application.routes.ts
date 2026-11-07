@@ -3,7 +3,7 @@ import { Router } from "express";
 import { authorize } from "../middlewares/rbac.middleware";
 import { protect } from "../middlewares/auth.middleware";
 import { validate } from "../middlewares/validate.middleware";
-import { createApplicationSchema } from "../validators/application.validator";
+import { createApplicationSchema, updateApplicationStatusSchema } from "../validators/application.validator";
 
 const router = Router();
 /**
@@ -233,6 +233,6 @@ router.get("/my", protect, authorize("applicant"), applicationController.getByAp
  * TODO: Add status validator to ensure value is one of:
  *   pending | reviewed | accepted | rejected
  */
-router.patch("/:id/status", protect, authorize("employer"), applicationController.updateStatus);
+router.patch("/:id/status", protect, authorize("employer"), validate(updateApplicationStatusSchema), applicationController.updateStatus);
 
 export default router;
