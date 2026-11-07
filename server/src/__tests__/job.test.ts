@@ -108,8 +108,11 @@ it("should approve job as admin", async () => {
         company_id: companyId,
       });
     expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body.data.status).toBe("pending");
+  });
 
+  it("should hide a pending job from the public", async () => {
     const getResponse = await request(app).get(`/api/jobs/${jobId}`);
-    expect(getResponse.body.data.status).toBe("pending");
+    expect(getResponse.status).toBe(400);
   });
 });
