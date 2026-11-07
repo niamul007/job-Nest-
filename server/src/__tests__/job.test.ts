@@ -51,6 +51,24 @@ beforeAll(async () => {
     jobId = response.body.data.id;
   });
 
+  it("should reject a job where salary_max is below salary_min", async () => {
+    const response = await request(app)
+      .post("/api/jobs")
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({
+        title: "Bad Salary Job",
+        description: "A job with a bad salary range",
+        location: "Test City",
+        type: "full-time",
+        category: "Engineer",
+        company_id: companyId,
+        salary_min: 100000,
+        salary_max: 50000,
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
   it("should get all jobs", async () => {
     const response = await request(app).get("/api/jobs");
     expect(response.status).toBe(200);

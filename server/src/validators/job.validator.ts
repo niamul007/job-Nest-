@@ -46,4 +46,10 @@ export const createJobSchema = z.object({
   salary_max: z.coerce.number()
     .min(0, "Maximum salary must be a positive number")
     .optional(),
-});
+}).refine(
+  (job) =>
+    job.salary_min === undefined ||
+    job.salary_max === undefined ||
+    job.salary_max >= job.salary_min,
+  { message: "Maximum salary must be greater than or equal to minimum salary", path: ["salary_max"] },
+);
