@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../app";
-import { createTestUsers } from "./helpers/testUsers";
+import { createTestUsers, tracked, cleanupAndClose } from "./helpers/testUsers";
 
 describe("Application routes", () => {
   let employerToken: string;
@@ -25,6 +25,7 @@ describe("Application routes", () => {
         website: "https://testcompany.com",
       });
     companyId = companyResponse.body.data.id;
+    tracked.companyIds.push(companyId);
 
     const jobResponse = await request(app)
       .post("/api/jobs")
@@ -40,6 +41,7 @@ describe("Application routes", () => {
         company_id: companyId,
       });
     jobId = jobResponse.body.data.id;
+    tracked.jobIds.push(jobId);
 
     const submitResponse = await request(app)
       .patch(`/api/jobs/${jobId}/submit`)
@@ -52,6 +54,10 @@ describe("Application routes", () => {
     expect(approveResponse.status).toBe(200);
   });
 
+  afterAll(async () => {
+    await cleanupAndClose();
+  });
+
   it("should applicant apply for a job", async () => {
     const response = await request(app)
       .post("/api/applications")
@@ -62,6 +68,7 @@ describe("Application routes", () => {
       });
 
     applicationId = response.body.data.id;
+    tracked.applicationIds.push(applicationId);
     expect(response.status).toBe(201);
     expect(response.body.success).toBe(true);
     expect(response.body.data.job_id).toBe(jobId);

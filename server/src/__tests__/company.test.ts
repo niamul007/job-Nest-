@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../app";
-import { createTestUsers } from "./helpers/testUsers";
+import { createTestUsers, tracked, cleanupAndClose } from "./helpers/testUsers";
 
 describe("Company Routes", () => {
   let employerToken: string; // shared across all tests
@@ -10,6 +10,10 @@ describe("Company Routes", () => {
     // login once, reuse token in all tests below
     const tokens = await createTestUsers();
     employerToken = tokens.employerToken;
+  });
+
+  afterAll(async () => {
+    await cleanupAndClose();
   });
 
   it("should create a company", async () => {
@@ -30,6 +34,7 @@ describe("Company Routes", () => {
     expect(response.body.success).toBe(true);
     expect(response.body.data.name).toBe(company.name);
     companyId = response.body.data.id; // save for later tests
+    tracked.companyIds.push(companyId);
   });
 
   it("should get all companies", async () => {
