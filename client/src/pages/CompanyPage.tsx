@@ -6,6 +6,7 @@ import { getAllCompanies, createCompany, updateCompany } from '../api/companies.
 import type { Company } from '../types'
 import { useAuthStore } from '../store/authStore'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const CompanyPage = () => {
   const navigate = useNavigate()
@@ -46,8 +47,8 @@ const CompanyPage = () => {
           })
         }
       }
-    } catch {
-      setError('Failed to load company')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to load company'))
     } finally {
       setLoading(false)
     }
@@ -93,8 +94,8 @@ const CompanyPage = () => {
           setError(response.message)
         }
       }
-    } catch {
-      setError('Something went wrong')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Something went wrong'))
     } finally {
       setSaving(false)
     }
