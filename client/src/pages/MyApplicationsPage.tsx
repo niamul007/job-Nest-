@@ -20,6 +20,10 @@ const Badge = ({ status }: { status: string }) => {
 }
 
 const MyApplicationsPage = () => {
+  useEffect(() => {
+    document.title = 'My Applications | JobNest'
+  }, [])
+
   const [applications, setApplications] = useState<Application[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

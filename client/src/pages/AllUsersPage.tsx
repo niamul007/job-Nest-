@@ -26,6 +26,10 @@ interface User {
  *   - Four render states: loading, error, empty, data
  */
 const AllUsersPage = () => {
+  useEffect(() => {
+    document.title = 'All Users | JobNest'
+  }, [])
+
   // Local state — only this page needs users, no need for global store
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)

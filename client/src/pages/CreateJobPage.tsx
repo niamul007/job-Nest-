@@ -9,6 +9,10 @@ import { useAuthStore } from '../store/authStore'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 const CreateJobPage = () => {
+  useEffect(() => {
+    document.title = 'Post a Job | JobNest'
+  }, [])
+
   const navigate = useNavigate()
   const [companies, setCompanies] = useState<Company[]>([])
   const [loading, setLoading] = useState(false)

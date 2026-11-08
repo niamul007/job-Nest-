@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Target, Eye, Zap, Scale, Calendar, Users, Building2, Briefcase } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -17,7 +18,12 @@ const aboutStats: { icon: LucideIcon; number: string; label: string }[] = [
   { icon: Briefcase, number: '12k+',  label: 'Active jobs' },
 ]
 
-const AboutPage = () => (
+const AboutPage = () => {
+  useEffect(() => {
+    document.title = 'About | JobNest'
+  }, [])
+
+  return (
   <div className="min-h-screen bg-gray-50 flex flex-col">
     <Navbar />
 
@@ -102,6 +108,7 @@ const AboutPage = () => (
     </div>
     <Footer />
   </div>
-)
+  )
+}
 
 export default AboutPage
