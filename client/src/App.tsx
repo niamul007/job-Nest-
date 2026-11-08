@@ -55,11 +55,11 @@ function App() {
           }
         />
 
-        {/* Any authenticated user */}
+        {/* Applicant only — view own applications */}
         <Route
           path="/dashboard/applications"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={[UserRole.Applicant]}>
               <MyApplicationsPage />
             </ProtectedRoute>
           }
