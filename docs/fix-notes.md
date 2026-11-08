@@ -77,3 +77,28 @@ All 9 fixes are done. Full suite after the last fix: 4 suites, 28 tests, all pas
 - **`logo_url` is not validated** in `createCompanySchema` (and `location` is validated but not stored). It reaches the DB unchecked, so the `javascript:` risk may exist there too. Do you want the same http/https rule?
 - **Email jobs stay in Redis.** Tests queue emails to `example.com` addresses and no worker runs, so those Bull jobs are not cleaned up. I did not delete Redis keys.
 - **Flaky 5 s hook timeout** in `beforeAll` when the remote DB is slow. Raising `testTimeout` in `jest.config.js` would help. I left it alone.
+
+# Batch 2 (branch `backend-fixes-2`)
+
+## 1. logo_url validation
+- **Problem:** `logo_url` was not in the company validator, so it was silently dropped and never checked.
+- **Change:** `createCompanySchema` in `server/src/validators/company.validator.ts` now has optional `logo_url`, which must be a URL starting with http:// or https:// (same style as `website`). Added 3 tests in `company.test.ts`: `javascript:alert(1)` rejected (400), valid https accepted (201), no logo accepted (201).
+- **Why:** Blocks `javascript:` and `data:` URLs in a field the client renders as an image source.
+- **What the client sends for an empty logo:** `CompanyPage.tsx` (lines 73 and 87) sends `logo_url: formData.logo_url || undefined`. An empty input becomes `undefined`, so the key is missing from the JSON. It never sends `""` or `null`.
+- **Test result:** 4 suites, 31 tests, all passing.
+- **Unsure about:** An empty string `""` or `null` is rejected. The client does not send those, but another client might. The same schema is used for PUT, so an update cannot clear an existing logo (the SQL uses COALESCE).
+
+## 2. Jest testTimeout
+- **Problem:** Hooks hit the 5 s default timeout when the remote DB is slow.
+- **Change:** `testTimeout: 30000` in `server/jest.config.js`.
+- **Why:** Avoids flaky `beforeAll` failures.
+- **Test result:** 4 suites, 31 tests, all passing. (I applied this before fix 1 to be able to verify it, but each is its own commit.)
+- **Unsure about:** Nothing.
+
+## 3. Open handle
+- **Problem:** Jest sometimes printed "did not exit one second after the test run".
+- **Finding:** With Redis running, `--detectOpenHandles` reported no open handles, and no run printed "did not exit" or hung. When Redis was NOT reachable, Jest hung and every test timed out. The cause is `server/src/config/redis.ts`: `reconnectStrategy` (line 24) retries forever every 500 ms max, and `redisClient.connect()` (line 34) keeps the socket loop alive, so the process never exits and requests that need Redis never resolve.
+- **Change:** None. The cause is in app code, so I did not change it.
+- **Why:** Rules say app code stays untouched. A fix would be a bounded reconnect strategy or a mocked Redis in tests.
+- **Test result:** 31 tests passing with `--detectOpenHandles`, no handles reported.
+- **Unsure about:** I did not reproduce a hang with Redis up, so a rare open handle may remain that this run did not catch.
