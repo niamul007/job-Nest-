@@ -57,3 +57,9 @@ All 8 fixes are done. `npm run build` (client/) succeeded after each one. The bu
 - **Why:** Employers and admins have no applications of their own. Others are redirected to `/`.
 - **Build result:** Success.
 - **Unsure about:** I did not check whether the sidebar still shows an "Applications" link to employers or admins. If it does, they would now be sent to the home page.
+
+## 9. Hide empty state when a list fails to load
+- **Problem:** After fix 3, a failed load showed the error banner and also the "no jobs" empty state. Errors also stayed on screen after a later success.
+- **Change:** `MyJobsPage.tsx` and `PendingJobsPage.tsx`: the empty state renders only when there is no error (empty list plus error renders nothing in that spot; a non-empty list still shows with an error). `setError(null)` now runs at the start of load, delete, submit and approve.
+- **Why:** The banner already explains the failure, and an old error should not outlive a new attempt.
+- **Build result:** Success.
