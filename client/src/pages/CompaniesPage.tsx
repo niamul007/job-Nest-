@@ -21,7 +21,10 @@ const CompanyCard = ({ company }: { company: Company }) => {
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-medium text-gray-900 mb-1">{company.name}</h3>
           <p className="text-xs text-gray-500 leading-relaxed mb-2 line-clamp-2">{company.description}</p>
-          {company.website && (
+          {company.website && !/^https?:\/\//i.test(company.website) && (
+            <span className="text-xs text-gray-500 break-all">{company.website}</span>
+          )}
+          {company.website && /^https?:\/\//i.test(company.website) && (
             <a
               href={company.website}
               target="_blank"
