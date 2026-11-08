@@ -83,6 +83,45 @@ describe("Company Routes", () => {
     expect(response.body.success).toBe(false);
   });
 
+  it("should reject a logo_url that is not http or https", async () => {
+    const response = await request(app)
+      .post("/api/companies")
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({
+        name: "Bad Logo Company",
+        description: "A company with a bad logo",
+        logo_url: "javascript:alert(1)",
+      });
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  it("should accept a valid https logo_url", async () => {
+    const response = await request(app)
+      .post("/api/companies")
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({
+        name: "Https Logo Company",
+        description: "A company with a good logo",
+        logo_url: "https://testcompany.com/logo.png",
+      });
+    expect(response.status).toBe(201);
+    if (response.body.data?.id) tracked.companyIds.push(response.body.data.id);
+  });
+
+  it("should accept a company with no logo_url (what the client sends for no logo)", async () => {
+    // client does `logo_url: formData.logo_url || undefined`, so the key is omitted from the JSON
+    const response = await request(app)
+      .post("/api/companies")
+      .set("Authorization", `Bearer ${employerToken}`)
+      .send({
+        name: "No Logo Company",
+        description: "A company without a logo",
+      });
+    expect(response.status).toBe(201);
+    if (response.body.data?.id) tracked.companyIds.push(response.body.data.id);
+  });
+
   it("should update a company", async () => {
     // token is already available here too ✅
     const updatedData = {

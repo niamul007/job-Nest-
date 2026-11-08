@@ -30,4 +30,11 @@ export const createCompanySchema = z.object({
     .url("Invalid URL format")
     .refine((value) => /^https?:\/\//i.test(value), "Website must start with http:// or https://")
     .optional(),
+
+  // Optional — the client omits it entirely when there is no logo.
+  // If provided, must be an http or https URL (blocks javascript:, data: etc.)
+  logo_url: z.string()
+    .url("Invalid URL format")
+    .refine((value) => /^https?:\/\//i.test(value), "Logo URL must start with http:// or https://")
+    .optional(),
 });
