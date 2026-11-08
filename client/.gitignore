@@ -36,3 +36,5 @@ dist-ssr
 # dotenv environment variables file
 .env
     
+# Vite cache
+.vite
