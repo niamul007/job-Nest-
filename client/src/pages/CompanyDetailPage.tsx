@@ -74,7 +74,10 @@ const CompanyDetailPage = () => {
           <div className="flex-1">
             <h1 className="text-2xl font-medium text-gray-900 mb-2">{company.name}</h1>
             <p className="text-sm text-gray-500 leading-relaxed mb-3">{company.description}</p>
-            {company.website && (
+            {company.website && !/^https?:\/\//i.test(company.website) && (
+              <span className="text-sm text-gray-500 break-all">{company.website}</span>
+            )}
+            {company.website && /^https?:\/\//i.test(company.website) && (
               <a
                 href={company.website}
                 target="_blank"
