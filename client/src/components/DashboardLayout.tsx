@@ -189,6 +189,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <header className="lg:hidden flex items-center gap-4 px-4 py-3 bg-white border-b border-gray-100">
           <button
             onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
             className="p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
           >
             <Menu className="w-5 h-5 text-gray-600" />
