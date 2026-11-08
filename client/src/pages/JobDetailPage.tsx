@@ -51,6 +51,10 @@ const JobDetailPage = () => {
       navigate('/login')
       return
     }
+    if (coverLetter.trim().length < 10) {
+      setError('Cover letter must be at least 10 characters long')
+      return
+    }
     setApplying(true)
     setError(null)
     try {
@@ -171,10 +175,13 @@ const JobDetailPage = () => {
                   ) : (
                     <form onSubmit={handleApply} className="flex flex-col gap-3">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-xs text-gray-700">Cover letter (optional)</label>
+                        <label className="text-xs text-gray-700">Cover letter (required, 10–1000 characters)</label>
                         <textarea
                           value={coverLetter}
                           onChange={(e) => setCoverLetter(e.target.value)}
+                          required
+                          minLength={10}
+                          maxLength={1000}
                           rows={4}
                           placeholder="Tell the employer why you're a great fit..."
                           className="px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-blue-400 bg-gray-50 resize-none"
