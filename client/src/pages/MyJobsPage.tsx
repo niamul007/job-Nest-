@@ -37,6 +37,7 @@ const MyJobsPage = () => {
   }, [])
 
   const fetchJobs = async () => {
+    setError(null)
     try {
       setLoading(true)
       const companyRes = await getAllCompanies()
@@ -59,6 +60,7 @@ const MyJobsPage = () => {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this job?')) return
+    setError(null)
     try {
       await deleteJob(id)
       setJobs(jobs.filter((job) => job.id !== id))
@@ -68,6 +70,7 @@ const MyJobsPage = () => {
   }
 
   const handleSubmit = async (id: string) => {
+    setError(null)
     try {
       await submitJob(id)
       fetchJobs()
@@ -100,7 +103,7 @@ const MyJobsPage = () => {
 
       {loading ? (
         <LoadingSpinner />
-      ) : jobs.length === 0 ? (
+      ) : jobs.length === 0 && error ? null : jobs.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-10 text-center">
           <p className="text-gray-400 text-sm mb-4">You haven't posted any jobs yet</p>
           <Link

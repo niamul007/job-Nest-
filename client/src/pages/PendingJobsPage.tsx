@@ -20,6 +20,7 @@ const PendingJobsPage = () => {
   }, [])
 
   const fetchPendingJobs = async () => {
+    setError(null)
     try {
       setLoading(true)
       const response = await api.get('/jobs/pending')
@@ -34,6 +35,7 @@ const PendingJobsPage = () => {
   }
 
   const handleApprove = async (id: string) => {
+    setError(null)
     try {
       await approveJob(id)
       setJobs(jobs.filter(job => job.id !== id))
@@ -58,7 +60,7 @@ const PendingJobsPage = () => {
 
       {loading ? (
         <LoadingSpinner />
-      ) : jobs.length === 0 ? (
+      ) : jobs.length === 0 && error ? null : jobs.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-10 text-center">
           <p className="text-gray-400 text-sm">No pending jobs to review</p>
         </div>
