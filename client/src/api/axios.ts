@@ -36,7 +36,7 @@ api.interceptors.request.use((config) => {
  * Response interceptor — runs after EVERY API response.
  * Success → passes through unchanged.
  * 401 error → token expired or invalid:
- *   → clears localStorage 
+ *   → clears the stored token and user from localStorage
  *   → redirects to login page
  *   → rejects promise so component catch blocks still fire
  *
@@ -51,6 +51,7 @@ api.interceptors.response.use(
       const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register');
       if (!isAuthEndpoint) {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         window.location.href = '/login';
       }
     }
