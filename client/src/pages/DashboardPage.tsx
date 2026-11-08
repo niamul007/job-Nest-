@@ -221,6 +221,10 @@ const AdminDashboard = () => {
 
 // ── DashboardPage ─────────────────────────────────
 const DashboardPage = () => {
+  useEffect(() => {
+    document.title = 'Dashboard | JobNest'
+  }, [])
+
   const { user } = useAuthStore()
 
   const renderDashboard = () => {

@@ -10,6 +10,10 @@ import type { Company, Job } from '../types'
 import { JobStatus } from '../types'
 
 const CompanyDetailPage = () => {
+  useEffect(() => {
+    document.title = 'Company | JobNest'
+  }, [])
+
   const { id } = useParams<{ id: string }>()
   const [company, setCompany] = useState<Company | null>(null)
   const [jobs, setJobs] = useState<Job[]>([])

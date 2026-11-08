@@ -1,6 +1,11 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 const NotFoundPage = () => {
+  useEffect(() => {
+    document.title = 'Page Not Found | JobNest'
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center text-center px-4">
       <div className="w-2 h-2 rounded-full bg-blue-600 mb-6"></div>

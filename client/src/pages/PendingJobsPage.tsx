@@ -7,6 +7,10 @@ import api from '../api/axios'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 const PendingJobsPage = () => {
+  useEffect(() => {
+    document.title = 'Pending Jobs | JobNest'
+  }, [])
+
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

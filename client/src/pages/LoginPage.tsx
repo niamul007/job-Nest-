@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { login } from '../api/auth.api'
 
 const LoginPage = () => {
+  useEffect(() => {
+    document.title = 'Log In | JobNest'
+  }, [])
+
   const navigate = useNavigate()
   const { setAuth } = useAuthStore()
   const [formData, setFormData] = useState({ email: '', password: '' })

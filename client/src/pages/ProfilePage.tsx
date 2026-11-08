@@ -1,7 +1,12 @@
+import { useEffect } from 'react'
 import DashboardLayout from '../components/DashboardLayout'
 import { useAuthStore } from '../store/authStore'
 
 const ProfilePage = () => {
+  useEffect(() => {
+    document.title = 'Profile | JobNest'
+  }, [])
+
   const { user } = useAuthStore()
 
   return (

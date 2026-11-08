@@ -16,6 +16,10 @@ const formatDate = (dateStr: string) =>
   new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
 const JobDetailPage = () => {
+  useEffect(() => {
+    document.title = 'Job Details | JobNest'
+  }, [])
+
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { isAuthenticated, user } = useAuthStore()

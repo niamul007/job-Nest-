@@ -44,6 +44,10 @@ const CompanyCard = ({ company }: { company: Company }) => {
 }
 
 const CompaniesPage = () => {
+  useEffect(() => {
+    document.title = 'Companies | JobNest'
+  }, [])
+
   const [companies, setCompanies] = useState<Company[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

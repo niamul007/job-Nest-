@@ -300,7 +300,12 @@ const CTA = () => (
 )
 
 // ── HomePage ──────────────────────────────────────
-const HomePage = () => (
+const HomePage = () => {
+  useEffect(() => {
+    document.title = 'Find Your Next Job | JobNest'
+  }, [])
+
+  return (
   <div className="min-h-screen bg-white">
     <Navbar />
     <Hero />
@@ -313,6 +318,7 @@ const HomePage = () => (
     <CTA />
     <Footer />
   </div>
-)
+  )
+}
 
 export default HomePage

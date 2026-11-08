@@ -23,6 +23,10 @@ const Badge = ({ status }: { status: string }) => {
 }
 
 const MyJobsPage = () => {
+  useEffect(() => {
+    document.title = 'My Jobs | JobNest'
+  }, [])
+
   const { user } = useAuthStore()
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)

@@ -51,6 +51,10 @@ const typeOptions = [
 ]
 
 const JobsPage = () => {
+  useEffect(() => {
+    document.title = 'Browse Jobs | JobNest'
+  }, [])
+
   const [searchParams] = useSearchParams()
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)

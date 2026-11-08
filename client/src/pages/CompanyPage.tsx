@@ -9,6 +9,10 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import { getErrorMessage } from '../utils/getErrorMessage'
 
 const CompanyPage = () => {
+  useEffect(() => {
+    document.title = 'My Company | JobNest'
+  }, [])
+
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const [company, setCompany] = useState<Company | null>(null)
