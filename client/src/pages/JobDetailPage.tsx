@@ -10,6 +10,7 @@ import { applyForJob } from '../api/applications.api'
 import { useAuthStore } from '../store/authStore'
 import type { Job } from '../types'
 import { UserRole } from '../types'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const formatDate = (dateStr: string) =>
   new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -38,8 +39,8 @@ const JobDetailPage = () => {
       if (response.success && response.data) {
         setJob(response.data)
       }
-    } catch {
-      setError('Failed to load job')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to load job'))
     } finally {
       setLoading(false)
     }
@@ -68,8 +69,8 @@ const JobDetailPage = () => {
       } else {
         setError(response.message)
       }
-    } catch {
-      setError('Failed to submit application')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to submit application'))
     } finally {
       setApplying(false)
     }

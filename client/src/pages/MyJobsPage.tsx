@@ -6,6 +6,7 @@ import { getAllCompanies } from '../api/companies.api'
 import type { Job } from '../types'
 import { useAuthStore } from '../store/authStore'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const Badge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
@@ -45,8 +46,8 @@ const MyJobsPage = () => {
       if (response.success && response.data) {
         setJobs(response.data)
       }
-    } catch {
-      setError('Failed to load jobs')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to load jobs'))
     } finally {
       setLoading(false)
     }
@@ -57,8 +58,8 @@ const MyJobsPage = () => {
     try {
       await deleteJob(id)
       setJobs(jobs.filter((job) => job.id !== id))
-    } catch {
-      setError('Failed to delete job')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to delete job'))
     }
   }
 
@@ -66,8 +67,8 @@ const MyJobsPage = () => {
     try {
       await submitJob(id)
       fetchJobs()
-    } catch {
-      setError('Failed to submit job for review')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to submit job for review'))
     }
   }
 
@@ -86,10 +87,15 @@ const MyJobsPage = () => {
         </Link>
       </div>
 
+      {error && (
+
+        <div className="mb-4 text-xs text-red-600 bg-red-50 border border-red-100 px-3 py-2 rounded-lg">{error}</div>
+
+      )}
+
+
       {loading ? (
         <LoadingSpinner />
-      ) : error ? (
-        <div className="text-center text-red-500 py-10">{error}</div>
       ) : jobs.length === 0 ? (
         <div className="bg-white border border-gray-100 rounded-xl p-10 text-center">
           <p className="text-gray-400 text-sm mb-4">You haven't posted any jobs yet</p>

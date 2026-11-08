@@ -6,6 +6,7 @@ import { getAllCompanies } from '../api/companies.api'
 import type { Company } from '../types'
 import { JobType } from '../types'
 import { useAuthStore } from '../store/authStore'
+import { getErrorMessage } from '../utils/getErrorMessage'
 
 const CreateJobPage = () => {
   const navigate = useNavigate()
@@ -45,8 +46,8 @@ const fetchCompanies = async () => {
         setFormData(prev => ({ ...prev, company_id: myCompanies[0].id }))
       }
     }
-  } catch {
-    setError('Failed to load companies')
+  } catch (err) {
+    setError(getErrorMessage(err, 'Failed to load companies'))
   }
 }
   const handleChange = (
@@ -70,8 +71,8 @@ const fetchCompanies = async () => {
       } else {
         setError(response.message)
       }
-    } catch {
-      setError('Failed to create job')
+    } catch (err) {
+      setError(getErrorMessage(err, 'Failed to create job'))
     } finally {
       setLoading(false)
     }
