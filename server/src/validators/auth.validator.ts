@@ -23,16 +23,15 @@ export const registerSchema = z.object({
 
   /**
    * Password rules:
-   *   min 8 characters
+   *   8 to 72 characters
    *   must contain at least one letter ((?=.*[A-Za-z]))
    *   must contain at least one number ((?=.*\d))
-   *   only safe characters allowed ([A-Za-z\d@$!%*?&])
+   *   any other non-space characters allowed (\S)
    */
   password: z.string()
-    .min(8, "Password must be at least 8 characters long")
     .regex(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must contain at least one letter and one number"
+      /^(?=.*[A-Za-z])(?=.*\d)\S{8,72}$/,
+      "Password must be 8-72 characters and include a letter and a number"
     ),
 
   // Role: only valid enum values accepted
