@@ -41,7 +41,10 @@ const MyJobsPage = () => {
     try {
       setLoading(true)
       const companyRes = await getAllCompanies()
-      if (!companyRes.success || !companyRes.data) return
+      if (!companyRes.success || !companyRes.data) {
+        setError('Could not load your company')
+        return
+      }
       const myCompany = companyRes.data.find((c) => c.owner_id === user?.id)
       if (!myCompany) {
         setJobs([])
