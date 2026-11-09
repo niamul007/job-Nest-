@@ -85,9 +85,11 @@ beforeAll(async () => {
 it("should approve job as admin", async () => {
   console.log("jobId:", jobId);
 
-  await request(app)
+  const submitResponse = await request(app)
     .patch(`/api/jobs/${jobId}/submit`)
     .set("Authorization", `Bearer ${employerToken}`);
+
+  expect(submitResponse.status).toBe(200);
 
   const response = await request(app)
     .patch(`/api/jobs/${jobId}/approve`)
