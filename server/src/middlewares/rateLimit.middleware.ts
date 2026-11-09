@@ -54,3 +54,41 @@ export const rateLimiter = async (req: Request, res: Response, next: NextFunctio
     next();
   }
 };
+/**
+ * Stricter per-IP limiter factory for sensitive auth endpoints.
+ * Same Redis INCR + EXPIRE pattern as the global limiter, with its own key prefix.
+ * Fails open if Redis is unavailable. Skipped entirely when NODE_ENV === "test".
+ */
+const createAuthLimiter = (prefix: string, windowSeconds: number, max: number) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (process.env.NODE_ENV === 'test') return next();
+    try {
+      const ip = req.ip || req.socket.remoteAddress || 'unknown';
+      const key = `${prefix}:${ip}`;
+
+      const count = await redisClient.incr(key);
+      if (count === 1) {
+        await redisClient.expire(key, windowSeconds);
+      }
+
+      res.setHeader('X-RateLimit-Limit', max);
+      res.setHeader('X-RateLimit-Remaining', Math.max(0, max - count));
+      res.setHeader('X-RateLimit-Reset', windowSeconds);
+
+      if (count > max) {
+        return res.status(429).json(
+          ApiResponse.error("Too many requests. Please try again later.")
+        );
+      }
+
+      next();
+    } catch (error) {
+      // Redis unavailable — fail open
+      next();
+    }
+  };
+
+// 10 login attempts per 15 minutes per IP
+export const loginLimiter = createAuthLimiter('rateLimit:login', 900, 10);
+// 10 registrations per hour per IP
+export const registerLimiter = createAuthLimiter('rateLimit:register', 3600, 10);
