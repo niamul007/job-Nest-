@@ -9,10 +9,13 @@ import { errorHandler } from './middlewares/errorHandler.middleware';
 import companyRoutes from './routes/company.routes';
 import jobRoutes from './routes/job.routes';
 import applicationRoutes from './routes/application.routes';
-import { rateLimiter } from './middlewares/rateLimit.middleware';
+import { rateLimiter, loginLimiter, registerLimiter } from './middlewares/rateLimit.middleware';
 import userRoutes from './routes/user.routes';
 
 const app = express();
+
+// Trust the first proxy hop so req.ip is the real client IP, not the proxy's
+app.set("trust proxy", 1);
 
 const corsOrigins: (string | RegExp)[] = [
   'http://localhost:5173',
@@ -60,6 +63,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+// Stricter limits on credential endpoints (skipped when NODE_ENV === "test")
+app.post('/api/auth/login', loginLimiter);
+app.post('/api/auth/register', registerLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/jobs', jobRoutes);
