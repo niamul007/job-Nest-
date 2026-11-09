@@ -25,6 +25,42 @@ describe("Auth Routes", () => {
     // expect(response.body.data.token).toBeDefined();
   });
 
+  it("should accept a password with symbols like # and @ at register", async () => {
+    const email = `symbolpw${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
+    trackEmail(email);
+
+    const response = await request(app)
+      .post("/api/auth/register")
+      .send({ name: "Symbol Pw User", email, password: "Test1234#@", role: "applicant" });
+
+    expect(response.status).toBe(201);
+    expect(response.body.success).toBe(true);
+  });
+
+  it("should reject a 7-character password at register", async () => {
+    const email = `shortpw${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
+    trackEmail(email);
+
+    const response = await request(app)
+      .post("/api/auth/register")
+      .send({ name: "Short Pw User", email, password: "Test123", role: "applicant" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
+  it("should reject a password with no digit at register", async () => {
+    const email = `nodigit${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
+    trackEmail(email);
+
+    const response = await request(app)
+      .post("/api/auth/register")
+      .send({ name: "No Digit User", email, password: "TestPassword!", role: "applicant" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+  });
+
   it("should login an existing user", async () => {
     const email = `loginuser${Date.now()}${Math.random().toString(36).slice(2, 8)}@example.com`;
     const password = `Aa1!${Math.random().toString(36).slice(2)}${Date.now()}`;
