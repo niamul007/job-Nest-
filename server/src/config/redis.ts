@@ -18,6 +18,7 @@ import { env } from './env';
 export const redisClient = createClient({
   username: env.redis.username,
   password: env.redis.password,
+  disableOfflineQueue: true, // fail commands immediately while disconnected
   socket: {
     host: env.redis.host,
     port: env.redis.port,

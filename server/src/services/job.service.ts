@@ -31,9 +31,14 @@ interface UpdateJobData {
  * - Optionally clears a specific job's cache by ID
  */
 async function clearJobCache(id?: string) {
-  const keys = await redisClient.keys('jobs:*');
-  if (keys.length > 0) await redisClient.del(keys);
-  if (id) await redisClient.del(`jobs:${id}`);
+  try {
+    const keys = await redisClient.keys('jobs:*');
+    if (keys.length > 0) await redisClient.del(keys);
+    if (id) await redisClient.del(`jobs:${id}`);
+  } catch (err) {
+    // DB write already happened — a failed cache clear must not fail the request
+    console.error('Redis cache clear failed:', (err as Error).message);
+  }
 }
 
 /**
@@ -80,14 +85,22 @@ export async function getAllJobs(filters?: {
 }) {
   const cacheKey = `jobs:${JSON.stringify(filters || {})}`;
 
-  const cached = await redisClient.get(cacheKey);
-  if (cached) {
-    console.log('✅ Returning from cache');
-    return JSON.parse(cached);
+  try {
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      console.log('✅ Returning from cache');
+      return JSON.parse(cached);
+    }
+  } catch (err) {
+    console.error('Redis read failed, falling back to database:', (err as Error).message);
   }
 
   const jobs = await jobModel.findAllJobs(filters);
-  await redisClient.setEx(cacheKey, 300, JSON.stringify(jobs)); // cache for 5 minutes
+  try {
+    await redisClient.setEx(cacheKey, 300, JSON.stringify(jobs)); // cache for 5 minutes
+  } catch (err) {
+    console.error('Redis write failed:', (err as Error).message);
+  }
   return jobs;
 }
 
@@ -101,7 +114,12 @@ export async function getJobById(id: string) {
   if (!id) throw new Error("Id isn't found");
 
   const cacheKey = `jobs:${id}`;
-  const cached = await redisClient.get(cacheKey);
+  let cached: string | null = null;
+  try {
+    cached = await redisClient.get(cacheKey);
+  } catch (err) {
+    console.error('Redis read failed, falling back to database:', (err as Error).message);
+  }
   if (cached) {
     console.log('✅ Returning from cache');
     const cachedJob = JSON.parse(cached);
@@ -113,7 +131,11 @@ export async function getJobById(id: string) {
   if (!existing) throw new Error("Job isn't found");
   if (existing.status !== JobStatus.Active) throw new Error("Job isn't found");
 
-  await redisClient.setEx(cacheKey, 600, JSON.stringify(existing)); // cache for 10 minutes
+  try {
+    await redisClient.setEx(cacheKey, 600, JSON.stringify(existing)); // cache for 10 minutes
+  } catch (err) {
+    console.error('Redis write failed:', (err as Error).message);
+  }
   return existing;
 }
 
