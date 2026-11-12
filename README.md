@@ -23,8 +23,7 @@ A production-grade **Job Board REST API** built with Node.js, TypeScript, and Po
 | Validation | Zod |
 | Testing | Jest |
 | API Docs | Swagger (auto-generated from JSDoc) |
-| Container | Docker + Docker Compose |
-| Deployment | Render (backend) · Vercel (frontend) · Neon (database) |
+| Deployment | Render (backend) · Vercel (frontend) · Neon (PostgreSQL) · Redis Cloud (Redis) |
 
 ---
 
@@ -66,7 +65,8 @@ A production-grade **Job Board REST API** built with Node.js, TypeScript, and Po
 
 **Caching**
 - Job listings cached in Redis for fast reads
-- Cache invalidation on write: `clearCache()` removes stale `job*` keys after any create/update/delete, so the next request rebuilds from the database
+- If Redis fails, reads fall back to the database and a failed cache write or clear is logged but does not fail the request
+- Cache invalidation on write: `clearJobCache()` removes stale `jobs:*` keys after any create/update/delete, so the next request rebuilds from the database
 
 **Testing & Documentation**
 - Jest test suite covering core flows
@@ -107,13 +107,13 @@ server/
 │   ├── routes/          # Express route definitions + Swagger JSDoc
 │   ├── services/        # Business logic layer
 │   ├── types/           # TypeScript interfaces and enums
-│   ├── utils/           # Response helpers, cache utils
+│   ├── utils/           # Response and error helpers
 │   ├── validators/      # Zod schemas
+│   ├── __tests__/       # Jest test files
 │   └── websocket/       # WebSocket server + notifyUser
-├── tests/               # Jest test files
-├── docker-compose.yml
-├── Dockerfile
-└── README.md
+├── db/                  # Migration script
+└── server.ts
+client/                  # React + Vite frontend
 ```
 
 ---
@@ -154,26 +154,85 @@ To prevent user enumeration. Different messages ("no account" vs "wrong password
 
 ---
 
-## Running Locally
+## Run it locally
+
+Requirements: Node 22, a Neon (PostgreSQL) connection string, and Redis (via Docker below).
 
 ```bash
-# Clone
 git clone https://github.com/niamul007/job-Nest-.git
-cd job-Nest-/server
+cd job-Nest-
 
-# Install
-npm install
+# Redis (choose your own password)
+docker run -d --name jobnest-redis -p 6379:6379 redis:7 redis-server --requirepass <choose a password>
 
-# Environment variables
-cp .env.example .env
-# Fill in: DATABASE_URL, REDIS_URL, JWT_SECRET, EMAIL_* credentials
+# Environment files
+cp server/.env.example server/.env
+cp client/.env.example client/.env
+# Edit both files; see the tables below
 
-# Run with Docker (recommended)
-docker-compose up
+# Backend
+cd server
+npm ci
+npm run dev
 
-# Or run directly
+# Frontend (second terminal)
+cd client
+npm ci
 npm run dev
 ```
+
+For local Redis set `REDIS_HOST=localhost`, `REDIS_PORT=6379`, `REDIS_USERNAME=default` and `REDIS_PASSWORD` to the password you chose. The server requires all of these and exits at startup if Redis is unreachable.
+
+### Environment variables (names only)
+
+**Server (`server/.env`)**
+
+| Name | Purpose |
+|---|---|
+| `PORT` | Port the API listens on |
+| `NODE_ENV` | Runtime mode (e.g. development) |
+| `CLIENT_URL` | Frontend origin the API is used from |
+| `DATABASE_URL` | PostgreSQL connection string (Neon) |
+| `REDIS_HOST` | Redis host |
+| `REDIS_PORT` | Redis port |
+| `REDIS_USERNAME` | Redis username |
+| `REDIS_PASSWORD` | Redis password |
+| `JWT_SECRET` | Secret used to sign JWTs |
+| `JWT_EXPIRES_IN` | JWT lifetime |
+| `EMAIL_HOST` | SMTP host |
+| `EMAIL_PORT` | SMTP port |
+| `EMAIL_USER` | SMTP username |
+| `EMAIL_PASS` | SMTP password |
+
+**Client (`client/.env`)**
+
+| Name | Purpose |
+|---|---|
+| `VITE_API_URL` | Base URL of the backend API |
+| `VITE_EMAILJS_SERVICE_ID` | EmailJS service ID (contact form) |
+| `VITE_EMAILJS_TEMPLATE_ID` | EmailJS template ID (contact form) |
+| `VITE_EMAILJS_PUBLIC_KEY` | EmailJS public key (contact form) |
+
+### Run the tests
+
+From `server/`:
+
+```bash
+npx jest --runInBand --coverage=false
+```
+
+The tests use the database and Redis from your `server/.env` and delete the rows they create.
+
+---
+
+## Known limits
+
+- No pagination on list endpoints
+- No password reset
+- No soft delete (deletes are permanent)
+- The auth token is stored in `localStorage`
+- Email is blocked on Render's free tier (SMTP ports), so emails do not go out in production
+- The free Render instance is slow on first load
 
 ---
 
