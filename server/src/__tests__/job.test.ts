@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../app";
+import { redisClient } from "../config/redis";
 import { createTestUsers, createSecondEmployer, tracked, cleanupAndClose } from "./helpers/testUsers";
 
 describe("Job Routes", () => {
@@ -158,5 +159,60 @@ it("should approve job as admin", async () => {
   it("should hide a pending job from the public", async () => {
     const getResponse = await request(app).get(`/api/jobs/${jobId}`);
     expect(getResponse.status).toBe(404);
+  });
+
+  describe("when Redis fails", () => {
+    let activeJobId: string;
+
+    beforeAll(async () => {
+      const created = await request(app)
+        .post("/api/jobs")
+        .set("Authorization", `Bearer ${employerToken}`)
+        .send({
+          title: "Redis Fallback Job",
+          description: "A job for the Redis fallback tests",
+          location: "Test City",
+          type: "full-time",
+          category: "Engineer",
+          company_id: companyId,
+        });
+      activeJobId = created.body.data.id;
+      tracked.jobIds.push(activeJobId);
+      await request(app)
+        .patch(`/api/jobs/${activeJobId}/submit`)
+        .set("Authorization", `Bearer ${employerToken}`);
+      const approved = await request(app)
+        .patch(`/api/jobs/${activeJobId}/approve`)
+        .set("Authorization", `Bearer ${adminToken}`);
+      expect(approved.status).toBe(200);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    function breakRedis() {
+      const fail = () => Promise.reject(new Error("Redis down (test)"));
+      jest.spyOn(redisClient, "get").mockImplementation(fail as never);
+      jest.spyOn(redisClient, "setEx").mockImplementation(fail as never);
+      jest.spyOn(redisClient, "keys").mockImplementation(fail as never);
+      jest.spyOn(redisClient, "del").mockImplementation(fail as never);
+      jest.spyOn(console, "error").mockImplementation(() => {});
+    }
+
+    it("should still list jobs from the database", async () => {
+      breakRedis();
+      const response = await request(app).get("/api/jobs");
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
+    });
+
+    it("should still return an active job by id", async () => {
+      breakRedis();
+      const response = await request(app).get(`/api/jobs/${activeJobId}`);
+      expect(response.status).toBe(200);
+      expect(response.body.data.id).toBe(activeJobId);
+    });
   });
 });
