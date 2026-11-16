@@ -26,7 +26,7 @@ const options: swaggerJsdoc.Options = {
     servers: [
       { url: "http://localhost:5000", description: "Development server" },
       {
-        url: "https://job-nest-production.up.railway.app",
+        url: "https://job-nest-pwkn.onrender.com",
         description: "Production server",
       }, // ← add this
     ],

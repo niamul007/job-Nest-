@@ -72,7 +72,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/users', userRoutes);
 
-// Health check endpoint — used by Railway and monitoring tools to verify the server is alive
+// Health check endpoint — used by Render and monitoring tools to verify the server is alive
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });

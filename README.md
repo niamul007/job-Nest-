@@ -181,7 +181,7 @@ npm ci
 npm run dev
 ```
 
-For local Redis set `REDIS_HOST=localhost`, `REDIS_PORT=6379`, `REDIS_USERNAME=default` and `REDIS_PASSWORD` to the password you chose. The server requires all of these and exits at startup if Redis is unreachable.
+For local Redis set `REDIS_HOST=localhost`, `REDIS_PORT=6379`, `REDIS_USERNAME=default` and `REDIS_PASSWORD` to the password you chose. The server requires all of these variables and exits at startup if one is missing; if Redis is unreachable it keeps retrying, and job reads fall back to the database.
 
 ### Environment variables (names only)
 
