@@ -40,7 +40,13 @@ export async function findApplicationById(id: string): Promise<Application | nul
  * Used by applicants to view their own application history.
  */
 export async function findApplicationsByApplicant(applicant_id: string): Promise<Application[]> {
-  const sql = `SELECT * FROM applications WHERE applicant_id = $1`;
+  const sql = `
+    SELECT a.*,
+      json_build_object('id', j.id, 'title', j.title, 'company_id', j.company_id) AS job
+    FROM applications a
+    JOIN jobs j ON j.id = a.job_id
+    WHERE a.applicant_id = $1
+  `;
   const result = await pool.query(sql, [applicant_id]);
   return result.rows;
 }

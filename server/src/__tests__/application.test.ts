@@ -74,6 +74,15 @@ describe("Application routes", () => {
     expect(response.body.data.job_id).toBe(jobId);
   });
 
+  it("should list the applicant's applications with the job", async () => {
+    const response = await request(app)
+      .get("/api/applications/my")
+      .set("Authorization", `Bearer ${applicantToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data[0].job.title).toBe("Test job");
+  });
+
   it("should get the job applications for employer", async () => {
     const response = await request(app)
       .get(`/api/applications/job/${jobId}`)
