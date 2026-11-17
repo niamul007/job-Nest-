@@ -97,7 +97,7 @@ const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       `}>
 
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 px-2 mb-6">
+        <Link to="/" aria-label="JobNest home" className="flex items-center gap-2 px-2 mb-6">
           <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
           </svg>
@@ -193,12 +193,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           >
             <Menu className="w-5 h-5 text-gray-600" />
           </button>
-          <div className="flex items-center gap-2">
+          <Link to="/" aria-label="JobNest home" className="flex items-center gap-2">
             <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
             </svg>
             <span className="text-base font-medium text-blue-600">JobNest</span>
-          </div>
+          </Link>
         </header>
 
         {/* Page content — scrollable, renders children passed to layout */}
