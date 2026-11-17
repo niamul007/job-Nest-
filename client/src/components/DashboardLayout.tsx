@@ -7,7 +7,6 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 import { UserRole } from '../types'
-import Footer from './Footer'
 
 interface DashboardLayoutProps {
   children: React.ReactNode // page content rendered inside the layout
@@ -207,7 +206,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <div className="flex-1 p-6">
             {children} {/* actual page content rendered here */}
           </div>
-          <Footer />
         </main>
 
       </div>
